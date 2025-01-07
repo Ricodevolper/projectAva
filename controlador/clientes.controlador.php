@@ -161,6 +161,30 @@ class ControladorClientes {
 
 
 }
+    static public function ctrEstados() 
+   
+    {
+         
+            $respuesta =  ModeloClientes::mdlEstados();
+ 
+            return $respuesta;
+    
+
+
+
+}
+    static public function ctrMunicipios($id_estado) 
+   
+    {
+         
+            $respuesta =  ModeloClientes::mdlMunicipios($id_estado);
+ 
+            return $respuesta;
+    
+
+
+
+}
 
 
 }

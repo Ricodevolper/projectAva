@@ -133,6 +133,26 @@ class ControladorPmercado{
           </script>";
         }
     }
+    static public function ctrTasasCetesFechaNumPago2($fk_id_tiie, $numero_pago){
+        try {
+        
+          $respuesta = ModeloPmercado::mdlTasasCetesFechaNumPago2($fk_id_tiie, $numero_pago);
+    
+          return $respuesta;
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return "<script>
+             Lobibox.notify('error', {
+		pauseDelayOnHover: true,
+		continueDelayOnInactiveTab: false,
+		position: 'top right',
+		icon: 'bx bx-check-circle',
+		msg: 'Tasas no encontradas Contacgta a tu administrador'
+	});
+          </script>";
+        }
+    }
     static public function ctrTasasCetesFechaNumPago($fk_id_tiie){
         try {
         

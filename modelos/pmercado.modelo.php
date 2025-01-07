@@ -196,6 +196,34 @@ class ModeloPmercado {
             return false;
         }
     }
+    public static function mdlTasasCetesFechaNumPago2($fk_id_tiie, $numero_pago) {
+        try {
+          
+            $stmt = Conexion::conectar()->prepare("SELECT fecha_pago  FROM tbl_detalle_tiie
+                WHERE `fk_id_tiie` = :fk_id_tiie
+                AND num_pago = :num_pago");
+                     $stmt->bindParam(":fk_id_tiie", $fk_id_tiie, PDO::PARAM_STR);
+                     $stmt->bindParam(":num_pago", $numero_pago, PDO::PARAM_STR);
+          
+            // Bindear los parámetros con los valores correspondientes
+            
+            // Ejecutar la consulta
+           if ($stmt->execute()) {
+            $resultados = $stmt->fetch();
+            return $resultados;
+           }else {
+            $resultados = 'error';
+           }
+        
+            // Cerrar el cursor
+            $stmt->closeCursor();
+            
+        } catch (Exception $e) {
+            // Registrar el error y retornar false
+            error_log($e->getMessage());
+            return false;
+        }
+    }
     public static function mdlTasasTiieFechaNumPago1($fk_id_tiie) {
         try {
           
@@ -225,16 +253,14 @@ class ModeloPmercado {
     public static function mdlTasasCetesFechaNumPago($id_detalle_tiie) {
         try {
           
-            $stmt = Conexion::conectar()->prepare("SELECT  fecha_pago  FROM tbl_detalle_tiie
+            $stmt = Conexion::conectar()->prepare("SELECT  fecha_pago, fk_id_tiie, num_pago  FROM tbl_detalle_tiie
                 WHERE `id_detalle_tiie` = :id_detalle_tiie
                  ");
                      $stmt->bindParam(":id_detalle_tiie", $id_detalle_tiie, PDO::PARAM_STR);
                      
-            // Bindear los parámetros con los valores correspondientes
-            
-            // Ejecutar la consulta
+       
            if ($stmt->execute()) {
-            $resultados = $stmt->fetch();
+            $resultados = $stmt->fetchAll();
             return $resultados;
            }else {
             $resultados = 'error';

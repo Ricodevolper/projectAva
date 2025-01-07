@@ -482,20 +482,39 @@ $partes = [
  if ($t_inversion == 'CETES') {
 
    
-        
-
-       
-      $fecha_pago = ControladorPmercado::ctrTasasCetesFechaNumPago($id_detalle_tiie);
-     
-   $fecha_pago =  $fecha_pago['fecha_pago'];
-
  
+       
+      $num_pago = ControladorPmercado::ctrTasasCetesFechaNumPago($id_detalle_tiie);
+     
 
-    
+//    $num_pago =  $num_pago['num_pago'];
+    $numero_pago = $num_pago[0]['num_pago'].'pago';
+   $fk_id_tiie = $num_pago[0]['fk_id_tiie'];
+
+
   
 
+   if ($numero_pago == 1) {
+  $fecha_pago = ControladorPmercado::ctrTasasCetesFechaNumPago1($fk_id_tiie);
 
-  $fecha_pago = ControladorPagos::ctrretrocederUnMesDiaHabil($fecha_pago);
+
+
+    $fecha_pago = $fecha_pago['fecha_pago'];
+   }else {
+    $numero_pago = (int)$numero_pago;
+    $numero_pago = $numero_pago - 1;
+
+    $fecha_pago = ControladorPmercado::ctrTasasCetesFechaNumPago2( $fk_id_tiie,$numero_pago);
+
+    $fecha_pago = $fecha_pago['fecha_pago'];
+    
+   }
+    
+
+
+
+
+  //$fecha_pago = ControladorPagos::ctrretrocederUnMesDiaHabil($fecha_pago);
 
 
 
@@ -539,27 +558,51 @@ $tcCliente = ControladorPmercado::ctrTipoCambio($fecha_pago);
 
 
 
-  $pagoDetalleTiie = ControladorPagos::ctrPagoDetalleTiie($id_detalle_tiie,$interes,$tasa,$tcStrike);
+$pagoDetalleTiie = ControladorPagos::ctrPagoDetalleTiie($id_detalle_tiie,$interes,$tasa,$tcStrike);
 
 
   }elseif ($t_inversion == 'TIIE') {
   
    
-    // if ($num_pago == '1') {
+    $num_pago = ControladorPmercado::ctrTasasCetesFechaNumPago($id_detalle_tiie);
+     
 
-    //     $Tiie = ControladorPmercado::ctrTasasTiieFechaNumPago1($fk_id_tiie);
-
-    //     $fecha_pago = $Cetes['fecha_pago'];
+    //    $num_pago =  $num_pago['num_pago'];
+        $numero_pago = $num_pago[0]['num_pago'].'pago';
+       $fk_id_tiie = $num_pago[0]['fk_id_tiie'];
+    
+    
+      
+    
+       if ($numero_pago == 1) {
+      $fecha_pago = ControladorPmercado::ctrTasasCetesFechaNumPago1($fk_id_tiie);
+    
+    
+    
+        $fecha_pago = $fecha_pago['fecha_pago'];
+       }else {
+        $numero_pago = (int)$numero_pago;
+        $numero_pago = $numero_pago - 1;
+    
+        $fecha_pago = ControladorPmercado::ctrTasasCetesFechaNumPago2( $fk_id_tiie,$numero_pago);
+    
+        $fecha_pago = $fecha_pago['fecha_pago'];
         
-    // }
-
-
+       }
+        
+    
+    
+    
+    
+      //$fecha_pago = ControladorPagos::ctrretrocederUnMesDiaHabil($fecha_pago);
+    
+    
     if ($plazo != '60'  && $plazo != '7') {
         # code...
      
    
     
-    $fecha_pago = ControladorPagos::ctrretrocederUnMesDiaHabil($fecha_pago);
+   // $fecha_pago = ControladorPagos::ctrretrocederUnMesDiaHabil($fecha_pago);
 
     
     $serie = $seriesTiie[$producto];

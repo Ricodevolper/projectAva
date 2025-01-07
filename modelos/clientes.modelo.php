@@ -278,6 +278,41 @@ class ModeloClientes
             return [];
         }
     }
+    static public function mdlEstados()
+    {
+        try {
+            $stmt = Conexion::conectar()->prepare("SELECT * FROM cat_estado ");
+            
+          
+            $stmt->execute();
+
+            $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $resultado;
+        } catch (PDOException $e) {
+            error_log('Error en mdlCuentasContablesCliente: ' . $e->getMessage());
+            return [];
+        }
+    }
+    static public function mdlMunicipios($id_estado)
+    {
+        try {
+            $stmt = Conexion::conectar()->prepare("SELECT * FROM cat_municipio WHERE  fk_estado = :id ");
+            
+            $stmt->bindParam(':id', $id_estado, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+
+            return $resultado;
+        } catch (PDOException $e) {
+            error_log('Error en mdlCuentasContablesCliente: ' . $e->getMessage());
+            return [];
+        }
+    }
 
     static public function mdlAsesorAsignado($id)
     {
