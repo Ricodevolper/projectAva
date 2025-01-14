@@ -497,4 +497,82 @@ GROUP BY tcb.num_contrato, tcb.status_liquidacion, tcb.t_moneda, tcb.fk_empleado
             return [];
         }
     }
+
+
+
+
+    static public function mdlInsertCliente( $Fk_promotor, $tipo_cliente, $razon_social, $nombre_clte, $apaterno_clte, $amaterno_clte, $sexo, $tipo_identificacion, $clave_elector, 
+    $curp, $rfc, $fecha_nacimiento, $religion, $nacionalidadPais, $fk_estado_nac, $estado_nac_extran, $nacionalidad, $condicion_migrat, $estado_civil, $nombre_cony, $apaterno_cony, 
+    $amaterno_cony, $num_hijos, $num_dep_eco, $tel_celular, $tel_casa, $tel_oficina, $tel_otro, $email, $email2, $fk_pais, $fk_estado, $fk_municipio, $fk_localidad, $calle, $num_int, 
+    $num_ext, $colonia, $ciudad, $cod_postal
+    ){
+    try {
+        $stmt = Conexion::conectar()->prepare("INSERT INTO tbl_clientes (Fk_promotor,tipo_cliente,razon_social, nombre_clte, apaterno_clte, amaterno_clte, sexo, tipo_identificacion,
+         clave_elector, curp, rfc, fecha_nacimiento,religion, Fk_pais_nac, Fk_estado_nac, estado_nac_extran, nacionalidad, condicion_migrat, estado_civil, nombre_cony, apaterno_cony, 
+         amaterno_cony, num_hijos, num_dep_eco, tel_celular, tel_casa, tel_oficina, tel_otro, email, email2, fk_pais, fk_estado, fk_municipio, fk_localidad, calle, num_ext, num_int, 
+         colonia, ciudad, cod_postal) 
+         VALUES (:Fk_promotor, :Tipo_cliente, :Razon_social, :Nombre_clte, :Apaterno_clte, :Amaterno_clte, :Sexo, :Tipo_identificacion, :Clave_elector, :Curp, :Rfc,:Fecha_nacimiento,
+        :Religion, :nacionalidadPais, :Fk_estado_nac, :Estado_nac_extran, :Nacionalidad, :Condicion_migrat, :Estado_civil, :Nombre_cony, :Apaterno_cony, :Amaterno_cony, :Num_hijos, :Num_dep_eco, 
+        :Tel_celular, :Tel_casa, :Tel_oficina, :Tel_otro, :Email, :Email2,:Fk_pais, :Fk_estado,:Fk_municipio, :Fk_localidad, :Calle, :Num_int, :Num_ext, :Colonia, :Ciudad , :Cod_postal)");
+        
+        $stmt->bindParam(':Fk_promotor', $Fk_promotor, PDO::PARAM_INT);
+        $stmt->bindParam(':Tipo_cliente', $tipo_cliente, PDO::PARAM_STR);
+        $stmt->bindParam(':Razon_social', $razon_social, PDO::PARAM_STR);
+        $stmt->bindParam(':Nombre_clte', $nombre_clte, PDO::PARAM_STR);
+        $stmt->bindParam(':Apaterno_clte', $apaterno_clte, PDO::PARAM_STR);
+        $stmt->bindParam(':Amaterno_clte', $amaterno_clte, PDO::PARAM_STR);
+        $stmt->bindParam(':Sexo', $sexo, PDO::PARAM_STR);
+        $stmt->bindParam(':Tipo_identificacion', $tipo_identificacion, PDO::PARAM_STR);
+        $stmt->bindParam(':Clave_elector', $clave_elector, PDO::PARAM_STR);
+        $stmt->bindParam(':Curp', $curp, PDO::PARAM_STR);
+        $stmt->bindParam(':Rfc', $rfc, PDO::PARAM_STR);
+        $stmt->bindParam(':Fecha_nacimiento', $fecha_nacimiento, PDO::PARAM_STR);
+        $stmt->bindParam(':Religion', $religion, PDO::PARAM_STR);
+         $stmt->bindParam(':nacionalidadPais', $nacionalidadPais, PDO::PARAM_INT);
+         $stmt->bindParam(':Fk_estado_nac', $fk_estado_nac, PDO::PARAM_INT);
+        $stmt->bindParam(':Estado_nac_extran', $estado_nac_extran, PDO::PARAM_STR);
+        $stmt->bindParam(':Nacionalidad', $nacionalidad, PDO::PARAM_STR);
+        $stmt->bindParam(':Condicion_migrat', $condicion_migrat, PDO::PARAM_STR);
+        $stmt->bindParam(':Estado_civil', $estado_civil, PDO::PARAM_STR);
+        $stmt->bindParam(':Nombre_cony', $nombre_cony, PDO::PARAM_STR);
+        $stmt->bindParam(':Apaterno_cony', $apaterno_cony, PDO::PARAM_STR);
+        $stmt->bindParam(':Amaterno_cony', $amaterno_cony, PDO::PARAM_STR);
+        $stmt->bindParam(':Num_hijos', $num_hijos, PDO::PARAM_INT);
+        $stmt->bindParam(':Num_dep_eco', $num_dep_eco, PDO::PARAM_INT);
+        $stmt->bindParam(':Tel_celular', $tel_celular, PDO::PARAM_STR);
+        $stmt->bindParam(':Tel_casa', $tel_casa, PDO::PARAM_STR);
+        $stmt->bindParam(':Tel_oficina', $tel_oficina, PDO::PARAM_STR);
+        $stmt->bindParam(':Tel_otro', $tel_otro, PDO::PARAM_STR);
+        $stmt->bindParam(':Email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':Email2', $email2, PDO::PARAM_STR);
+        $stmt->bindParam(':Fk_pais', $fk_pais, PDO::PARAM_INT);
+        $stmt->bindParam(':Fk_estado', $fk_estado, PDO::PARAM_INT);
+        $stmt->bindParam(':Fk_municipio', $fk_municipio, PDO::PARAM_INT);
+        $stmt->bindParam(':Fk_localidad', $fk_localidad, PDO::PARAM_INT);
+        $stmt->bindParam(':Calle', $calle, PDO::PARAM_STR);
+        $stmt->bindParam(':Num_int', $num_int, PDO::PARAM_STR);
+        $stmt->bindParam(':Num_ext', $num_ext, PDO::PARAM_STR);
+        $stmt->bindParam(':Colonia', $colonia, PDO::PARAM_STR);
+        $stmt->bindParam(':Ciudad', $ciudad, PDO::PARAM_STR);
+        $stmt->bindParam(':Cod_postal', $cod_postal, PDO::PARAM_STR);
+        
+
+        if ($stmt->execute()) {
+            return [
+                'status' => 'success',
+                'message' => 'Cliente insertado correctamente'
+            ];
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Error al insertar cliente'
+            ];
+        }
+    } catch (PDOException $e) {
+        return [
+            'status' => 'error',
+            'message' => 'Error en la base de datos: ' . $e->getMessage()
+        ];
+    }
+}
 }

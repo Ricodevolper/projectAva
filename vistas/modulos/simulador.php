@@ -127,7 +127,7 @@ ini_set('error_log', 'error.log');  ?>
       ?>
 
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" inert style="display: none;">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">

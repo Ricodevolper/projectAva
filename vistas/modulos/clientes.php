@@ -39,7 +39,7 @@ if (isset($_POST['nombreBusquedaCliente'])) {
 </div>
 <div class="ms-auto">
               <div class="btn-group">
-                <button  id="añadirClienteb" name="añadirClienteb" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#añadirCliente" data-id="" type="button" class="btn btn-outline-primary">Añadir Cliente</button>
+                <a href="addCliente"  id="añadirClienteb" name="añadirClienteb" class="btn btn-outline-primary"  type="button" class="btn btn-outline-primary">Añadir Cliente</a>
                
               
               </div>

@@ -97,7 +97,7 @@ $GarantLiquidaciones = ControladorBi::ctrLiquidacionesProximas();
               foreach ($GarantLiquidaciones as $Vencido) {
                 ?>
                               
-                              <div class="modal fade" id="VencGarantModal<?=$Vencido['fk_cliente']?>" tabindex="-1" aria-hidden="true">
+                              <div class="modal fade" id="VencGarantModal<?=$Vencido['fk_cliente']?>" tabindex="-1" inert>
                         <div class="modal-dialog modal-xl">
                           <div class="modal-content">
                             <div class="modal-header">

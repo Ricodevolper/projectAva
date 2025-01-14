@@ -24,16 +24,8 @@
   }
 </style>
 
-<script>
-  function uploadFile(event, documentName) {
-    const file = event.target.files[0];
-    if (file) {
-      alert(`Archivo "${file.name}" cargado para ${documentName}.`);
-      // Aquí puedes manejar la subida del archivo con AJAX o enviarlo al servidor.
-    }
-  }
-</script>
-<div class="modal fade" id="añadirCliente" tabindex="-1" aria-hidden="true">
+
+<div class="modal fade" id="añadirCliente" tabindex="-1" >
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
@@ -141,15 +133,20 @@
               </div>
 
               <div class="bs-stepper-content">
-                <form onSubmit="return false">
                   <div id="test-vl-1" role="tabpane3" class="bs-stepper-pane content fade" aria-labelledby="stepper3trigger1">
                     <h5 class="mb-1">Datos Generales</h5>
                     <p class="mb-4"></p>
+
+                   
+                    <form method="POST" id="form-datos-generales">
+
+                  
 
                     <div class="row g-3">
                       <div class="col-12 col-lg-4">
                         <label for="FisrtName" class="form-label">Nombre(s)</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe Nombre">
+                        <input type="hidden" class="form-control" id="datgen" name="datgen" placeholder="Escribe Nombre">
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="LastName" class="form-label">Primer Apellido</label>
@@ -192,7 +189,7 @@
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="fNac" class="form-label">Fecha de Nacimiento</label>
-                        <input type="text" class="form-control datepicker " id="fNac" name="fNac" placeholder="Ingresa Fecha de Nacimiento">
+                        <input type="date" class="form-control  " id="fNac" name="fNac" placeholder="Ingresa Fecha de Nacimiento">
                       </div>
 
                       <div class="col-12 col-lg-4">
@@ -641,8 +638,8 @@
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="estCivil" class="form-label">Estado Civil</label>
-                        <select class="form-select" id="estCivil" name="estCivil" aria-label="Default select example">
-                          <option selected>---</option>
+                        <select class="form-select" id="estCivil" name="estCivil" aria-label="Default select example" onchange="toggleConyugeFields()">
+                        <option selected>---</option>
                           <option value="soltero(a)">Soltero(a)</option>
                           <option value="casado(a)">Casado(a)</option>
                           <option value="viudo(a)">Viudo(a)</option>
@@ -651,6 +648,40 @@
                           <option value="indistinto">Indistinto</option>
                         </select>
                       </div>
+                      <div id="conyugeFields" style="display: none;">
+                      <div class="row g-3 mt-3">
+ 
+                                            <div class="col-12 col-lg-4">
+                        <label for="nombreConyuge" class="form-label">Nombre Cónyuge</label>
+                        <input type="text" class="form-control" id="nombreConyuge" name="nombreConyuge" placeholder="Nombre Completo">
+                      </div>
+                      <div class="col-12 col-lg-4">
+                        <label for="primerApellidoConyuge" class="form-label">Primer Apellido Cónyuge</label>
+                        <input type="text" class="form-control" id="primerApellidoConyuge" name="primerApellidoConyuge" placeholder="Primer Apellido">
+                      </div>
+                      <div class="col-12 col-lg-4">
+                        <label for="segundoApellidoConyuge" class="form-label">Segundo Apellido Cónyuge</label>
+                        <input type="text" class="form-control" id="segundoApellidoConyuge" name="segundoApellidoConyuge" placeholder="Segundo Apellido">
+                      </div>
+
+                      <div class="col-12 col-lg-4">
+                        <label for="numeroHijos" class="form-label">Número de Hijos</label>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="iconoNumeroHijos">#</span>
+                          <input type="number" class="form-control" id="numeroHijos" name="numeroHijos" placeholder="Número Hijos" aria-describedby="iconoNumeroHijos">
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-lg-4">
+                        <label for="numeroDependientes" class="form-label">Núm. Dep. Económicos</label>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="iconoDependientes">#</span>
+                          <input type="number" class="form-control" id="numeroDependientes" name="numeroDependientes" placeholder="Número Dependientes" aria-describedby="iconoDependientes">
+                        </div>
+                        </div>
+                      </div>
+                      </div>
+
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">Teléfono Celular</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone"></i></span>
@@ -707,45 +738,45 @@
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">Calle</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                          <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="text"  name = "calle" class="form-control" placeholder="">
                         </div>
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">N. Ext</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                          <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="text" class="form-control" placeholder="" name="noExt">
                         </div>
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">N. Int</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                          <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="text" name="noInt" class="form-control" placeholder="">
                         </div>
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">Colonia</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                          <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="text" name="colonia" class="form-control" placeholder="">
                         </div>
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">Ciudad</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></i></span>
-                          <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="text" name="ciudad" class="form-control" placeholder="">
                         </div>
                       </div>
                       <div class="col-12 col-lg-4">
                         <label for="rfc" class="form-label">C.P</label>
                         <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                          <input type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="text" name="cp" class="form-control" placeholder="">
                         </div>
                       </div>
 
                       <div class="col-12 col-lg-6">
-                        <button class="btn btn-primary px-4" onclick="stepper3.next()">Next<i class='bx bx-right-arrow-alt ms-2'></i></button>
+                      <button class="btn btn-primary px-4" onclick="stepper3.next()">Next<i class='bx bx-right-arrow-alt ms-2'></i></button>
                       </div>
                     </div><!---end row-->
-
+                    </form>
                   </div>
 
                   <div id="test-vl-2" role="tabpane3" class="bs-stepper-pane content fade" aria-labelledby="stepper3trigger2">
@@ -905,7 +936,7 @@
                         <div class="d-flex align-items-center gap-3">
                           <button class="btn btn-outline-secondary px-4" onclick="stepper3.previous()"><i class='bx bx-left-arrow-alt me-2'></i>Previous</button>
                           <button class="btn btn-primary px-4" onclick="stepper3.next()">Next<i class='bx bx-right-arrow-alt ms-2'></i></button>
-                        </div>
+                   </div>
                       </div>
                     </div><!---end row-->
 
@@ -918,19 +949,19 @@
                     <div class="row g-3">
                       <div class="col-12 col-lg-6">
                         <label for="nombreBeneficiario" class="form-label">Nombre Completo del Beneficiario</label>
-                        <input type="text" class="form-control" id="nombreBeneficiario" placeholder="">
+                        <input type="text" class="form-control" id="nombreBeneficiario" name="nombreBeneficiario" placeholder="">
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="pApellidoBeneficiario" class="form-label">Primer Apellido</label>
-                        <input type="text" class="form-control" id="pApellidoBeneficiario" placeholder="">
+                        <input type="text" class="form-control" id="pApellidoBeneficiario" name="pApellidoBeneficiario" placeholder="">
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="sApellidoBeneficiario" class="form-label">Segundo Apellido</label>
-                        <input type="text" class="form-control" id="sApellidoBeneficiario" placeholder="">
+                        <input type="text" class="form-control" id="sApellidoBeneficiario" name="sApellidoBeneficiario" placeholder="">
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="parentezco" class="form-label">Parentezco</label>
-                        <select class="form-select" id="parentezco">
+                        <select class="form-select" id="parentezco" name="parentezco">
                           <option value="">----</option>
                           <option value="PAPÁ">PAPÁ</option>
                           <option value="MAMÁ">MAMÁ</option>
@@ -951,19 +982,19 @@
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="porcentajeBeneficiario" class="form-label">Porcentaje%</label>
-                        <input type="text" class="form-control" id="porcentajeBeneficiario">
+                        <input type="text" class="form-control" id="porcentajeBeneficiario" name="porcentajeBeneficiario">
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="fNacBen" class="form-label">Fecha de Nacimiento</label>
-                        <input type="date" class="form-control" id="fNacBen">
+                        <input type="date" class="form-control" id="fNacBen" name="fNacBen">
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="telBeneficiario" class="form-label">Teléfono Beneficiario</label>
-                        <input type="text" class="form-control" id="telBeneficiario">
+                        <input type="text" class="form-control" id="telBeneficiario" name="telBeneficiario" >
                       </div>
                       <div class="col-12 col-lg-6">
                         <label for="dirBeneficiario" class="form-label">Dirección Beneficiario</label>
-                        <input type="text" class="form-control" id="dirBeneficiario">
+                        <input type="text" class="form-control" id="dirBeneficiario" name="dirBeneficiario">
                       </div>
 
                       <button type="button" class="btn btn-primary col-2" id="addBeneficiaryButton">
@@ -1081,6 +1112,7 @@
                         </div>
                       </div>
                     </div>
+                    <br>
                     <div class="col-12">
                       <div class="d-flex align-items-center gap-3">
                         <button class="btn btn-outline-secondary px-4" onclick="stepper3.previous()"><i class='bx bx-left-arrow-alt me-2'></i>Previous</button>
@@ -1096,65 +1128,64 @@
                         <!-- INE Anverso -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">📇</div>
+                            <div class="document-icon" id="preview-INE-Anverso">📇</div>
                             <div class="document-title">INE Anverso</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'INE Anverso')" />
+                            <input type="file" name="ineAnverso" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="uploadFile(event, 'INE Anverso')" />
                           </div>
                         </div>
                         <!-- INE Reverso -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">📇</div>
+                            <div class="document-icon" id="preview-INE-Reverso">📇</div>
                             <div class="document-title">INE Reverso</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'INE Reverso')" />
+                            <input type="file"  name="ineReverso" accept=".jpeg,.png,.jpg,.pdf" class="form-control mt-3" onchange="uploadFile(event, 'INE Reverso')" />
                           </div>
                         </div>
                         <!-- Comprobante de Domicilio -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">📄</div>
+                            <div class="document-icon" id="preview-Comprobante-Domicilio" >📄</div>
                             <div class="document-title">Comprobante de Domicilio</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'Comprobante de Domicilio')" />
+                            <input type="file" name="comprobanteDomicilio" accept=".jpeg,.png,.jpg,.pdf" class="form-control mt-3" onchange="uploadFile(event, 'Comprobante de Domicilio')" />
                           </div>
                         </div>
                         <!-- CURP -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">🆔</div>
+                            <div class="document-icon" id="preview-CURP" >🆔</div>
                             <div class="document-title">CURP</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'CURP')" />
+                            <input type="file" name="curpDoc"  accept=".jpeg,.png,.jpg,.pdf" class="form-control mt-3" onchange="uploadFile(event, 'CURP')" />
                           </div>
                         </div>
                         <!-- Estado de Cuenta -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">📑</div>
+                            <div class="document-icon" id="preview-Estado-Cuenta" >📑</div>
                             <div class="document-title">Estado de Cuenta</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'Estado de Cuenta')" />
+                            <input type="file" name="estadoCuenta" accept=".jpeg,.png,.jpg,.pdf" class="form-control mt-3" onchange="uploadFile(event, 'Estado de Cuenta')" />
                           </div>
                         </div>
                         <!-- Constancia Fiscal -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">📜</div>
+                            <div class="document-icon" id="preview-Constancia-Fiscal" >📜</div>
                             <div class="document-title">Constancia Fiscal</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'Constancia Fiscal')" />
+                            <input type="file" name="constanciaFiscal" accept=".jpeg,.png,.jpg,.pdf" class="form-control mt-3" onchange="uploadFile(event, 'Constancia Fiscal')" />
                           </div>
                         </div>
                         <!-- Cuestionario de Inversionista -->
                         <div class="col-md-3 mb-4">
                           <div class="document-card">
-                            <div class="document-icon">📝</div>
-                            <div class="document-title">Cuestionario de Inversionista</div>
-                            <input type="file" class="form-control mt-3" onchange="uploadFile(event, 'Cuestionario de Inversionista')" />
+                            <div class="document-icon" id="preview-Cuestionario-Inversionista">📝</div>
+                            <div class="document-title"  >Cuestionario de Inversionista</div>
+                            <input type="file" name="cuestionarioInversionista" accept=".jpeg,.png,.jpg,.pdf" class="form-control mt-3" onchange="uploadFile(event, 'Cuestionario de Inversionista')" />
                           </div>
                         </div>
                       </div>
                       <div class="col-12">
                         <div class="d-flex align-items-center gap-3">
                           <button class="btn btn-outline-secondary px-4" onclick="stepper3.previous()"><i class='bx bx-left-arrow-alt me-2'></i>Previous</button>
-                          <button class="btn btn-primary px-4" onclick="stepper3.next()">Next<i class='bx bx-right-arrow-alt ms-2'></i></button>
-                        </div>
+                            </div>
                       </div>
                     </div>
                   </div>
@@ -1211,10 +1242,7 @@
                     <label for="fNac" class="form-label">Fecha de Nacimiento</label>
                     <input type="text" class="form-control datepicker " id="fNacCotitular" name="fNacCotitular" placeholder="Ingresa Fecha de Nacimiento">
                   </div>
-                  <div class="col-12 col-lg-4">
-                    <label for="edad" class="form-label">Fecha de Nacimiento</label>
-                    <input type="number" class="form-control datepicker " id="edadCotitular" name="edadCotitular" placeholder="Ingresa Edad">
-                  </div>
+                  
                   <div class="col-12 col-lg-4">
                     <label for="religion" class="form-label">Religión</label>
                     <input type="text" class="form-control" id="religionCotitular" name="religionCotitular" placeholder="Ingresa Religión">
@@ -1661,7 +1689,7 @@
                   </div>
                   <div class="col-12 col-lg-4">
                     <label for="estCivil" class="form-label">Estado Civil</label>
-                    <select class="form-select" id="estCivilCotitular" name="estCivil" aCotitularria-label="Default select example">
+                    <select class="form-select" id="estCivilCotitular" name="estCivilCotitular" aCotitularria-label="Default select example">
                       <option selected>---</option>
                       <option value="soltero(a)">Soltero(a)</option>
                       <option value="casado(a)">Casado(a)</option>
@@ -1771,7 +1799,7 @@
                 </div><!---end row-->
 
               </div>
-              </form>
+            
             </div>
 
 
@@ -1797,8 +1825,9 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        
           </div>
         </div>
       </div>
@@ -2068,4 +2097,50 @@
         document.getElementById('telBeneficiario').value = '';
         document.getElementById('dirBeneficiario').value = '';
       });
+      function uploadFile(event, documentName) {
+  const file = event.target.files[0]; // Archivo seleccionado
+  const previewElement = document.getElementById(`preview-${documentName.replace(/\s+/g, "-")}`);
+
+  if (file) {
+    const fileType = file.type;
+
+    // Verifica si es imagen o PDF
+    if (fileType.startsWith("image/")) {
+      // Mostrar la imagen seleccionada
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewElement.innerHTML = `<img src="${e.target.result}" alt="${documentName}" style="width: 100px; height: auto; border-radius: 5px;" />`;
+      };
+      reader.readAsDataURL(file);
+    } else if (fileType === "application/pdf") {
+      // Mostrar un ícono de PDF
+      previewElement.innerHTML = `📄`;
+    } else {
+      // Formato no permitido
+      alert("Formato no permitido. Por favor, sube solo imágenes o PDFs.");
+      event.target.value = ""; // Resetea el input
+      return;
+    }
+
+    // Aquí podrías enviar el archivo al servidor
+    console.log(`Archivo "${file.name}" listo para subir.`);
+  }
+
+ 
+      }
+// Function to save form section data
+// Get form sections by their IDs
+
+
+function toggleConyugeFields() {
+    const estCivil = document.getElementById("estCivil").value;
+    const conyugeFields = document.getElementById("conyugeFields");
+
+    if (estCivil === "casado(a)") {
+      conyugeFields.style.display = "block";
+    } else {
+      conyugeFields.style.display = "none";
+    }
+  }
+
     </script>

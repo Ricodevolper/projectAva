@@ -154,7 +154,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+<div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" inert>
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <!-- Encabezado -->

@@ -185,6 +185,22 @@ class ControladorClientes {
 
 
 }
+static public function ctrInsertCliente( $Fk_promotor, $tipo_cliente, $razon_social, $nombre_clte, $apaterno_clte, $amaterno_clte, $sexo, $tipo_identificacion, $clave_elector, 
+$curp, $rfc, $fecha_nacimiento, $religion, $fk_pais_nac, $fk_estado_nac, $estado_nac_extran, $nacionalidad, $condicion_migrat, $estado_civil, $nombre_cony, $apaterno_cony, 
+$amaterno_cony, $num_hijos, $num_dep_eco, $tel_celular, $tel_casa, $tel_oficina, $tel_otro, $email, $email2, $fk_pais, $fk_estado, $fk_municipio, $fk_localidad, $calle, $num_int, 
+$num_ext, $colonia, $ciudad, $cod_postal
+){
+
+    $respuesta =  ModeloClientes::mdlInsertCliente($Fk_promotor, $tipo_cliente, $razon_social, $nombre_clte, $apaterno_clte, $amaterno_clte, $sexo, $tipo_identificacion, $clave_elector, 
+    $curp, $rfc, $fecha_nacimiento, $religion, $fk_pais_nac, $fk_estado_nac, $estado_nac_extran, $nacionalidad, $condicion_migrat, $estado_civil, $nombre_cony, $apaterno_cony, 
+    $amaterno_cony, $num_hijos, $num_dep_eco, $tel_celular, $tel_casa, $tel_oficina, $tel_otro, $email, $email2, $fk_pais, $fk_estado, $fk_municipio, $fk_localidad, $calle, $num_int, 
+    $num_ext, $colonia, $ciudad, $cod_postal);
+ 
+    return $respuesta;
+
+}
 
 
 }
+
+

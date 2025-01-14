@@ -1,4 +1,4 @@
-<div class="modal fade" id="depositosModal<?=$Cliente['id_cliente']?>" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="depositosModal<?=$Cliente['id_cliente']?>" tabindex="-1" inert>
                         <div class="modal-dialog modal-fullscreen">
                           <div class="modal-content">
                             <div class="modal-header">

@@ -78,6 +78,7 @@ if ($_SESSION['perfil'] == 'administrador') {
       $_GET["ruta"] == "depositosEvent" ||
       $_GET["ruta"] == "depositostiie" ||
       $_GET["ruta"] == "saveDepositos" ||
+      $_GET["ruta"] == "saveClientes" ||
       $_GET["ruta"] == "saveContratos" ||
        $_GET["ruta"] == "savePrecioSp500" ||
       $_GET["ruta"] == "tasas" ||
@@ -93,6 +94,7 @@ if ($_SESSION['perfil'] == 'administrador') {
       $_GET["ruta"] == "historicoClienteLe" ||
       $_GET["ruta"] == "estadoCuenta" ||
       $_GET["ruta"] == "depositoBitcoinUsd" ||
+      $_GET["ruta"] == "addCliente"||
       $_GET["ruta"] == "pagosPendientes" ||
      
       $_GET["ruta"] == "salir"

@@ -679,6 +679,10 @@ $pagoDetalleTiie = ControladorPagos::ctrPagoDetalleTiie($id_detalle_tiie,$intere
 
 
 
+print_r($_POST);
+
+
+
 
 
 
