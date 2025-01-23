@@ -199,6 +199,75 @@ $num_ext, $colonia, $ciudad, $cod_postal
     return $respuesta;
 
 }
+static public function ctrInsertClienteActEco(
+    $Id_cliente, $Profesion, $Otra_profesion, $Ocupacion_clte, $Puesto_clte, $Actividad, $Otra_actividad, $Nom_empresa, $Tipo_empresa, $Otro_tipo_emp, $Fk_pais, $Fk_estado, $Fk_municipio,
+     $Fk_localidad, $Calle, $Num_int, $Num_ext, $Colonia, $Ciudad, $Cod_postal, $Ingre_mensual, $Ingresos_provienen
+){
+
+    $respuesta =  ModeloClientes::mdlInsertClienteActEco(
+        $Id_cliente, $Profesion, $Otra_profesion, $Ocupacion_clte, $Puesto_clte, $Actividad, $Otra_actividad, $Nom_empresa, $Tipo_empresa, $Otro_tipo_emp, $Fk_pais, $Fk_estado, $Fk_municipio,
+         $Fk_localidad, $Calle, $Num_int, $Num_ext, $Colonia, $Ciudad, $Cod_postal, $Ingre_mensual, $Ingresos_provienen
+    );
+ 
+    return $respuesta;
+
+}
+static public function ctrInsertClienteBenefeciario(
+    $Nom_beneficiario, $Apaterno_beneficiario, $Amaterno_beneficiario, $Parentesco, $Clave, $Tel_contacto, $Direccion_ben, $F_naciemintoben
+){
+
+    $respuesta =  ModeloClientes::mdlInsertClienteBeneficiario(
+        $Nom_beneficiario, $Apaterno_beneficiario, $Amaterno_beneficiario, $Parentesco, $Clave, $Tel_contacto, $Direccion_ben, $F_naciemintoben
+    );
+ 
+    return $respuesta;
+
+}
+  static public function ctrInsertClienteBenefeciarioRel(
+    $fk_beneficiario, $fk_solSeg, $porcentaje
+) {
+
+    $respuesta =  ModeloClientes::mdlInsertClienteBenefeciarioRel(
+        $fk_beneficiario, $fk_solSeg, $porcentaje    );
+ 
+    return $respuesta;
+
+}
+  static public function ctrInsertTransaccionalidad(
+    $Id_cliente, $recursos, $num_porciento_propio, $num_porciento_tercero_glob, $uso_cuenta, $rec_esp, $transac_mens, $mont_mens, $saldo_mens
+
+) {
+
+    $respuesta =  ModeloClientes::mdlInsertTransaccionalidad(
+        $Id_cliente, $recursos, $num_porciento_propio, $num_porciento_tercero_glob, $uso_cuenta, $rec_esp, $transac_mens, $mont_mens, $saldo_mens
+    );
+ 
+    return $respuesta;
+
+}
+  static public function ctrInsertTercero(
+    $Nom_tercero, $Apaterno_tercero, $Amaterno_tercero, $Persona_juri, $Tipo_ident_tercero, $Num_ident_tercero, $Nacionalidad_tercero
+ 
+) {
+
+    $respuesta =  ModeloClientes::mdlInsertTercero(
+        $Nom_tercero, $Apaterno_tercero, $Amaterno_tercero, $Persona_juri, $Tipo_ident_tercero, $Num_ident_tercero, $Nacionalidad_tercero
+    );
+ 
+    return $respuesta;
+
+}
+  static public function ctrInsertarCotitular($id_cliente, $nombreCotitular, $primerApellidoCotitular, $segundoApellidoCotitular, $generoCotitular, $identificacionOficialCotitular, $claveElectorCotitular,
+  $curpCotitular,  $rfcCotitular, $fNacCotitular, $religion_cotitular, $Fk_pais_nac_cotitular, $Fk_estado_nac_cotitular, $nacionalidad_cotitular, $condicion_migrat_cotitular, $estado_civil_cotitular, $tel_celular_cotitular, $tel_casa_cotitular, $email_cotitular, $fk_pais_cotitular, $fk_estado_cotitular, $fk_municipio_cotitular, $fk_localidad_cotitular, 
+    $calle_cotitular, $num_ext_cotitular, $num_int_cotitular, $colonia_cotitular, $ciudad_cotitular, $cod_postal_cotitular) {
+
+    $respuesta =  ModeloClientes::mdlInsertarCotitular( $id_cliente, $nombreCotitular, $primerApellidoCotitular, $segundoApellidoCotitular, $generoCotitular, $identificacionOficialCotitular, $claveElectorCotitular,
+    $curpCotitular,  $rfcCotitular, $fNacCotitular, $religion_cotitular, $Fk_pais_nac_cotitular, $Fk_estado_nac_cotitular, $nacionalidad_cotitular, $condicion_migrat_cotitular, $estado_civil_cotitular, $tel_celular_cotitular, $tel_casa_cotitular, $email_cotitular, $fk_pais_cotitular, $fk_estado_cotitular, $fk_municipio_cotitular, $fk_localidad_cotitular, 
+      $calle_cotitular, $num_ext_cotitular, $num_int_cotitular, $colonia_cotitular, $ciudad_cotitular, $cod_postal_cotitular );
+ 
+    return $respuesta;
+
+}
 
 
 }

@@ -124,7 +124,7 @@ if ($_SESSION['perfil'] == 'administrador') {
 
 
 <!-- Modal -->
-<div class="modal fade" id="Agregar_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" inert>
+<div class="modal fade" id="Agregar_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -177,7 +177,7 @@ if ($_SESSION['perfil'] == 'administrador') {
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="Editar_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" inert>
+<div class="modal fade" id="Editar_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-warning">
@@ -223,7 +223,7 @@ if ($_SESSION['perfil'] == 'administrador') {
     </div>
   </div>
 </div>
-<div class="modal fade" id="Eliminar_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" inert>
+<div class="modal fade" id="Eliminar_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-danger">
@@ -265,7 +265,7 @@ if ($_SESSION['perfil'] == 'administrador') {
 
 
 
-<div class="modal fade" id="Actualizar_Contrasena_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" inert>
+<div class="modal fade" id="Actualizar_Contrasena_Usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary">

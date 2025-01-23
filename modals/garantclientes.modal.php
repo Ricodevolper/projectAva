@@ -40,7 +40,7 @@ ini_set('error_log', 'error.log');
                
                ?>
                
-               <div class="modal fade" id="clientemodalGarant<?= $Cliente[0]['id_cliente'] ?>" tabindex="-1" inert>
+               <div class="modal fade" id="clientemodalGarant<?= $Cliente[0]['id_cliente'] ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
           <div class="modal-content">
             <div class="modal-header">

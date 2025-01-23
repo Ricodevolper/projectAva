@@ -2,7 +2,7 @@
 ini_set('display_errors', 0);  // Deshabilita la visualización de errores en pantalla
 ini_set('log_errors', 1);      // Habilita la escritura de errores en un archivo de registro
 ini_set('error_log', 'error.log');  ?>
-<div class="modal fade" id="clientemodal<?= $Cliente['id_cliente'] ?>" tabindex="-1" inert>
+<div class="modal fade" id="clientemodal<?= $Cliente['id_cliente'] ?>" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
