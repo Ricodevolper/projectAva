@@ -935,6 +935,7 @@ $insertDatosGenerales = ControladorClientes::ctrEditCliente(
             $nombresDocs[3],
             $nombresDocs[4],
             $nombresDocs[5],
+            
             $nombresDocs[6],
             $fech_up,
             $ine_anverso_cotitutar,
