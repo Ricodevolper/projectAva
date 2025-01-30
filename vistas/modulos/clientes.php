@@ -93,7 +93,15 @@ if (isset($_POST['nombreBusquedaCliente'])) {
 
     foreach ($buscarcliente as $Cliente) {
 
+      $cotitular = ControladorClientes::ctrDatosCotitular($Cliente['id_cliente']);
+      $economicos = ControladorClientes::ctrDatosEconomicosClientes($Cliente['id_cliente']);
+
+      $benificiaros = ControladorClientes::ctrallbeneficiarioId($Cliente["id_cliente"]);
+
+
       $datosClientes = ControladorClientes::ctrDatosClientes($Cliente['id_cliente']);
+     
+     
       $numeroLimpio = preg_replace('/[^0-9]/', '', $datosClientes[0]['tel_celular']);
 
 
@@ -133,96 +141,107 @@ if (isset($_POST['nombreBusquedaCliente'])) {
   ?>
 
       <!-- inicio card -->
-      <div class="col">
-        <div class="card radius-10">
-          <div class="card-body text-center">
-            <div class="profile-img">
-              <img src="images/user.png" class="rounded-circle" width="120" height="120" alt="">
-            </div>
-            <div class="mt-4">
-              <h5 class="mb-1"><?= $nombreCompleto ?></h5>
-              <hr>
-              <p class="mb-0"><?= $Cliente['tipo_cliente'] ?></p>
-              <p> Curp: <?= $Cliente['curp'] ?> </p>
-            </div>
-            <hr>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item"><strong>Contacto </strong> <br> Tel Casa: <?= $tel1 ?><br> Tel Ofi: <?= $tel2 ?> <br> Email: <?= $Cliente['email'] ?> </li>
-              <li class="list-group-item"><strong>Asesor: </strong><?= $Cliente['nombre_asesor'] ?> <br> Fecha Alta: <?= $Cliente['alta_sistema'] ?> </li>
+      <div class="col-md-3 col-sm-6 mb-4">
+  <div class="card radius-10 h-100 position-relative">
+  <?php if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director') {
+    
+    if (isset($cotitular[0])) {
 
 
-            </ul>
-            <div class="d-flex align-items-center justify-content-around mt-4">
-            <?php
-              
-              if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director' || $_SESSION['perfil'] == 'DirectorAvawm' ) {
-             
-           
+      if ($cotitular[0]['num_int_cotitular'] == 0) {
+        $num = ' EXT.' . $cotitular[0]['num_ext_cotitular'];
+      } else {
+        $num = ' INT. ' . $cotitular[0]['num_int_cotitular'];
+      }
+      $direcc = 'Calle: ' . $cotitular[0]['calle_cotitular'] . ' Núm.' . $num . ' , Colonia: ' . $cotitular[0]['colonia_cotitular'] . ', Cd. ' . $cotitular[0]['ciudad_cotitular'];
 
-              ?>
-              <button id="perfilCliente" name="id" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#clientemodal<?= $Cliente['id_cliente'] ?>" data-id="<?= $Cliente['id_cliente'] ?>">
-                <div class="">
-                  <h4 class="mb-0"><i class="fadeIn animated bx bx-id-card"></i></h4>
-                  <p class="mb-0">Perfil</p>
-                </div>
-              </button>
-              <?php
-              
-            } 
-              ?>
-               <?php
-              
-              if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director'  ) {
-             
-           
+      if ($cotitular[0]['sexo_cotitular']) {
+        if ($cotitular[0]['sexo_cotitular'] == 'M') {
+          $genero = 'Masculino';
+        } elseif ($cotitular[0]['sexo_cotitular'] == 'F') {
+          $genero = 'Femenino';
+        }
+      } else {
+        $genero = '';
+      }
 
-              ?>
-              <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#depositosModal<?=$Cliente['id_cliente']?>">
-                <div class="">
-                  <div class="font-22"> <i class="lni lni-money-protection"></i>
-                  </div>
-                  <p class="mb-0">Depositos</p>
-                </div>
-              </button>
 
-            
+    }
+    
+    ?>
 
-              <?php include "modals/depositos.modal.php";  ?>
-              <?php
-              
-            } 
-            
-              ?>
+                    
+      
+  <form action="editClientes" method="POST" class="position-absolute" style="top: 10px; right: 10px;">
+      <input type="hidden" name="id_cliente" value="<?= $Cliente['id_cliente'] ?>">
+     
+     
+      <button type="submit" class="btn p-0 border-0 bg-transparent" title="Editar">
+        <i class="bx bx-pencil"></i>
+      </button>
+    </form>
 
-              <?php
-              
-              if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director'  || $_SESSION['perfil'] == 'DirectorAvawm' ) {
-             
-           
-
-              ?>
-
-              <div class="">
-             <form action="retiros"method='POST'>
-              <input type="hidden" value="<?=$Cliente['id_cliente']?>" name="id_cliente" >
-                <button class="btn btn-outline-warning">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign">
-                    <line x1="12" y1="1" x2="12" y2="23"></line>
-                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                  </svg>
-                  <p class="mb-0">Retiros<?=$hola?></p>
-              </div>
-              </button>
-          </form>
-          <?php
-              
-            } 
-            
-              ?>
-            </div>
-          </div>
-        </div>
+    <?php } ?>
+    <div class="card-body text-center">
+      <div class="profile-img">
+        <img src="images/user.png" class="rounded-circle" width="120" height="120" alt="">
       </div>
+      <div class="mt-4">
+        <h5 class="mb-1"><?= $nombreCompleto ?></h5>
+        <hr>
+        <p class="mb-0"><?= $Cliente['tipo_cliente'] ?></p>
+        <p>Curp: <?= $Cliente['curp'] ?></p>
+      </div>
+      <hr>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <strong>Contacto</strong><br>
+          Tel Casa: <?= $tel1 ?><br>
+          Tel Ofi: <?= $tel2 ?><br>
+          Email: <?= $Cliente['email'] ?>
+        </li>
+        <li class="list-group-item">
+          <strong>Asesor:</strong> <?= $Cliente['nombre_asesor'] ?><br>
+          Fecha Alta: <?= $Cliente['alta_sistema'] ?>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center justify-content-around mt-4">
+        <?php if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director' || $_SESSION['perfil'] == 'DirectorAvawm') { ?>
+          <button id="perfilCliente" name="id" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#clientemodal<?= $Cliente['id_cliente'] ?>" data-id="<?= $Cliente['id_cliente'] ?>">
+            <div class="">
+              <h4 class="mb-0"><i class="fadeIn animated bx bx-id-card"></i></h4>
+              <p class="mb-0">Perfil</p>
+            </div>
+          </button>
+        <?php } ?>
+
+        <?php if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director') { ?>
+          <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#depositosModal<?= $Cliente['id_cliente'] ?>">
+            <div class="">
+              <div class="font-22"><i class="lni lni-money-protection"></i></div>
+              <p class="mb-0">Depósitos</p>
+            </div>
+          </button>
+          <?php include "modals/depositos.modal.php"; ?>
+        <?php } ?>
+
+        <?php if ($_SESSION['perfil'] == 'administrador' || $_SESSION['perfil'] == 'director' || $_SESSION['perfil'] == 'DirectorAvawm') { ?>
+          <form action="retiros" method="POST">
+            <input type="hidden" value="<?= $Cliente['id_cliente'] ?>" name="id_cliente">
+            <button class="btn btn-outline-warning">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              <p class="mb-0">Retiros</p>
+            </button>
+          </form>
+        <?php } ?>
+      </div>
+    </div>
+  </div>
+</div>
+
       <!-- fincard -->
       
   <?php

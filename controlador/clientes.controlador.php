@@ -109,6 +109,32 @@ class ControladorClientes {
 
 
     }
+    static public function ctrBorrarBeneficiarios($id){
+        $id = htmlspecialchars(strip_tags($id));
+   
+        if(preg_match('/^[a-zA-Z0-9 ]+$/',$id)){
+           $respuesta =  ModeloClientes::mdlBorrarBeneficiarios($id);
+
+           return $respuesta;
+
+        }
+
+
+
+    }
+    static public function ctrConsultaDocsPersonal($id){
+        $id = htmlspecialchars(strip_tags($id));
+   
+        if(preg_match('/^[a-zA-Z0-9 ]+$/',$id)){
+           $respuesta =  ModeloClientes::mdlConsultaDocsPersonal($id);
+
+           return $respuesta;
+
+        }
+
+
+
+    }
     static public function ctrCuentasContablesCliente($id){
         $id = htmlspecialchars(strip_tags($id));
    
@@ -199,12 +225,39 @@ $num_ext, $colonia, $ciudad, $cod_postal
     return $respuesta;
 
 }
+static public function ctrEditCliente( $id_cleinte, $Fk_promotor, $tipo_cliente, $razon_social, $nombre_clte, $apaterno_clte, $amaterno_clte, $sexo, $tipo_identificacion, $clave_elector, 
+$curp, $rfc, $fecha_nacimiento, $religion, $fk_pais_nac, $fk_estado_nac, $estado_nac_extran, $nacionalidad, $condicion_migrat, $estado_civil, $nombre_cony, $apaterno_cony, 
+$amaterno_cony, $num_hijos, $num_dep_eco, $tel_celular, $tel_casa, $tel_oficina, $tel_otro, $email, $email2, $fk_pais, $fk_estado, $fk_municipio, $fk_localidad, $calle, $num_int, 
+$num_ext, $colonia, $ciudad, $cod_postal
+){
+
+    $respuesta =  ModeloClientes::mdlEditCliente( $id_cleinte, $Fk_promotor, $tipo_cliente, $razon_social, $nombre_clte, $apaterno_clte, $amaterno_clte, $sexo, $tipo_identificacion, $clave_elector, 
+    $curp, $rfc, $fecha_nacimiento, $religion, $fk_pais_nac, $fk_estado_nac, $estado_nac_extran, $nacionalidad, $condicion_migrat, $estado_civil, $nombre_cony, $apaterno_cony, 
+    $amaterno_cony, $num_hijos, $num_dep_eco, $tel_celular, $tel_casa, $tel_oficina, $tel_otro, $email, $email2, $fk_pais, $fk_estado, $fk_municipio, $fk_localidad, $calle, $num_int, 
+    $num_ext, $colonia, $ciudad, $cod_postal);
+ 
+    return $respuesta;
+
+}
 static public function ctrInsertClienteActEco(
     $Id_cliente, $Profesion, $Otra_profesion, $Ocupacion_clte, $Puesto_clte, $Actividad, $Otra_actividad, $Nom_empresa, $Tipo_empresa, $Otro_tipo_emp, $Fk_pais, $Fk_estado, $Fk_municipio,
      $Fk_localidad, $Calle, $Num_int, $Num_ext, $Colonia, $Ciudad, $Cod_postal, $Ingre_mensual, $Ingresos_provienen
 ){
 
     $respuesta =  ModeloClientes::mdlInsertClienteActEco(
+        $Id_cliente, $Profesion, $Otra_profesion, $Ocupacion_clte, $Puesto_clte, $Actividad, $Otra_actividad, $Nom_empresa, $Tipo_empresa, $Otro_tipo_emp, $Fk_pais, $Fk_estado, $Fk_municipio,
+         $Fk_localidad, $Calle, $Num_int, $Num_ext, $Colonia, $Ciudad, $Cod_postal, $Ingre_mensual, $Ingresos_provienen
+    );
+ 
+    return $respuesta;
+
+}
+static public function ctrUpdateClienteActEco(
+    $Id_cliente, $Profesion, $Otra_profesion, $Ocupacion_clte, $Puesto_clte, $Actividad, $Otra_actividad, $Nom_empresa, $Tipo_empresa, $Otro_tipo_emp, $Fk_pais, $Fk_estado, $Fk_municipio,
+     $Fk_localidad, $Calle, $Num_int, $Num_ext, $Colonia, $Ciudad, $Cod_postal, $Ingre_mensual, $Ingresos_provienen
+){
+
+    $respuesta =  ModeloClientes::mdlUpdateClienteActEco(
         $Id_cliente, $Profesion, $Otra_profesion, $Ocupacion_clte, $Puesto_clte, $Actividad, $Otra_actividad, $Nom_empresa, $Tipo_empresa, $Otro_tipo_emp, $Fk_pais, $Fk_estado, $Fk_municipio,
          $Fk_localidad, $Calle, $Num_int, $Num_ext, $Colonia, $Ciudad, $Cod_postal, $Ingre_mensual, $Ingresos_provienen
     );
@@ -245,6 +298,18 @@ static public function ctrInsertClienteBenefeciario(
     return $respuesta;
 
 }
+  static public function ctrUpdateTransaccionalidad(
+    $Id_cliente, $recursos, $num_porciento_propio, $num_porciento_tercero_glob, $uso_cuenta, $rec_esp, $transac_mens, $mont_mens, $saldo_mens
+
+) {
+
+    $respuesta =  ModeloClientes::mdlUpdateTransaccionalidad(
+        $Id_cliente, $recursos, $num_porciento_propio, $num_porciento_tercero_glob, $uso_cuenta, $rec_esp, $transac_mens, $mont_mens, $saldo_mens
+    );
+ 
+    return $respuesta;
+
+}
   static public function ctrInsertTercero(
     $Nom_tercero, $Apaterno_tercero, $Amaterno_tercero, $Persona_juri, $Tipo_ident_tercero, $Num_ident_tercero, $Nacionalidad_tercero
  
@@ -269,6 +334,73 @@ static public function ctrInsertClienteBenefeciario(
 
 }
 
+
+static public function ctrInsertDocsPersonales(
+    $fk_cliente,
+    $ine_anverso,
+    $ine_reverso,
+    $domicilio_img,
+    $curp_img,
+    $edo_cuenta_img,
+    $situacion_fiscal_img,
+    $cuestionario_inver_img,
+    $fech_up,
+    $ine_anverso_cotitutar,
+    $ine_reverso_cotitular,
+    $curp_cotitular_img,
+    $situacion_fiscal_cotitular_img
+)
+{
+    $respuesta =  ModeloClientes::mdlInsertDocsPersonales(
+        $fk_cliente,
+        $ine_anverso,
+        $ine_reverso,
+        $domicilio_img,
+        $curp_img,
+        $edo_cuenta_img,
+        $situacion_fiscal_img,
+        $cuestionario_inver_img,
+        $fech_up,
+        $ine_anverso_cotitutar,
+        $ine_reverso_cotitular,
+        $curp_cotitular_img,
+        $situacion_fiscal_cotitular_img
+     );
+     return $respuesta;
+}
+static public function ctrUpdateDocsPersonales(
+    $fk_cliente,
+    $ine_anverso,
+    $ine_reverso,
+    $domicilio_img,
+    $curp_img,
+    $edo_cuenta_img,
+    $situacion_fiscal_img,
+    $cuestionario_inver_img,
+    $fech_up,
+    $ine_anverso_cotitutar,
+    $ine_reverso_cotitular,
+    $curp_cotitular_img,
+    $situacion_fiscal_cotitular_img
+)
+{
+    $respuesta =  ModeloClientes::mdlUpdateDocsPersonales(
+        $fk_cliente,
+        $ine_anverso,
+        $ine_reverso,
+        $domicilio_img,
+        $curp_img,
+        $edo_cuenta_img,
+        $situacion_fiscal_img,
+        $cuestionario_inver_img,
+        $fech_up,
+        $ine_anverso_cotitutar,
+        $ine_reverso_cotitular,
+        $curp_cotitular_img,
+        $situacion_fiscal_cotitular_img
+     );
+     return $respuesta;
+}
 
 }
 

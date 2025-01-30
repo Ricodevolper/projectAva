@@ -143,7 +143,6 @@ ini_set('error_log', 'error.log');  ?>
                   <div class="tab-content pt-3">
                     <?php
 
-                    $cotitular = ControladorClientes::ctrDatosCotitular($Cliente['id_cliente']);
                     if (isset($cotitular[0])) {
                       # code...
 
@@ -280,8 +279,7 @@ ini_set('error_log', 'error.log');  ?>
 
                       </div>
                     <?php      }
-                    $economicos = ControladorClientes::ctrDatosEconomicosClientes($Cliente['id_cliente']);
-
+                    
 
                     ?>
                     <div class="tab-pane fade" id="economicos<?= $Cliente['id_cliente'] ?>" role="tabpanel">

@@ -24,6 +24,98 @@
     }
 </style>
 
+<?php
+
+$id_cliente = $_POST['id_cliente'];
+$datosClientes = ControladorClientes::ctrDatosClientes($id_cliente);
+
+$cotitular = ControladorClientes::ctrDatosCotitular($id_cliente);
+
+$economicos = ControladorClientes::ctrDatosEconomicosClientes($id_cliente);
+
+$beneficiarios = ControladorClientes::ctrallbeneficiarioId($id_cliente);
+$transaccionalidad = ControladorClientes::ctrconsultarTransaccionalidadCliente($id_cliente);
+
+$cuentasContables = ControladorClientes::ctrCuentasContablesCliente($id_cliente);
+$asignarCliente =  ControladorClientes::ctrAsesorAsignado($id_cliente);
+
+$documentosClientes = ControladorClientes::ctrConsultaDocsPersonal($id_cliente);
+
+
+
+
+$documentos = $documentosClientes[0];
+
+function renderDocumentPreview($filePath, $previewId, $id_cliente) {
+    if (!$filePath) return "📇"; // Icono si no hay archivo
+
+    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+    $basePath = "documentos/clientes/".$id_cliente."/"; // Ajusta la ruta base
+
+    if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
+        return "<img src='{$basePath}{$filePath}' alt='Preview' style='max-width: 100%; max-height: 150px;' />";
+    } elseif (strtolower($extension) === 'pdf') {
+        return "<iframe src='{$basePath}{$filePath}' style='width: 100%; height: 150px;' frameborder='0'></iframe>";
+    }
+
+    return "Formato no soportado";
+}
+
+
+if ($transaccionalidad[0]['transac_men'] == '1_14') {
+    $transacciones = '1 A 14';
+} elseif ($transaccionalidad[0]['transac_men'] == '14_29') {
+    $transacciones = '15 A 29';
+} elseif ($transaccionalidad[0]['transac_men'] == '30_38') {
+    $transacciones = '30 A 38';
+} elseif ($transaccionalidad[0]['transac_men'] == '40_mas') {
+    $transacciones = '40 A Más';
+}
+
+
+if ($transaccionalidad[0]['monto_men'] == '1_15000') {
+    $monto = '$1 A $15,000';
+} elseif ($transaccionalidad[0]['monto_men'] == '1,5001_50,000') {
+    $monto = '$15,001 A $50,000';
+} elseif ($transaccionalidad[0]['monto_men'] == '5,0001_90,000') {
+    $monto = '$50,000 A $90,000';
+} elseif ($transaccionalidad[0]['monto_men'] == '90,001_150,000') {
+    $monto = '$90,001 A $150,0000';
+} elseif ($transaccionalidad[0]['monto_men'] == '150,000_mas') {
+    $monto = '$150,0001 A Más';
+} else {
+    $monto = '';
+}
+
+if ($transaccionalidad[0]['saldo_men'] == '1_10501') {
+    $saldo = '$1 A $10,501';
+} elseif ($transaccionalidad[0]['saldo_men'] == '10,501_35,000') {
+    $saldo = '$10,501 A $35,000';
+} elseif ($transaccionalidad[0]['saldo_men'] == '35,001_63,000') {
+    $saldo = '$35001 A $63,000';
+} elseif ($transaccionalidad[0]['saldo_men'] == '63001_105,000') {
+    $saldo = '$63,001 A $105,000';
+} elseif ($transaccionalidad[0]['saldo_men'] == '105,001_mas') {
+    $saldo = '$105,001 A Más';
+} else {
+    $saldo = '';
+}
+
+
+if ($datosClientes[0]['tipo_identificacion'] == 'CREDENCIAL PARA VOTAR') {
+    $tipo_identificacion = 'INE';
+} elseif ($datosClientes[0]['tipo_identificacion'] == 'PASAPORTE') {
+    $tipo_identificacion = 'PASAPORTE';
+} elseif ($datosClientes[0]['tipo_identificacion'] == 'CEDULA PROFESIONAL') {
+    $tipo_identificacion = 'CEDULA';
+}
+
+
+print_r($_POST);
+
+?>
+
+
 <!-- start page content wrapper-->
 <div class="page-content-wrapper">
     <!-- start page content-->
@@ -31,7 +123,7 @@
 
         <!--start breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Añadir Cliente</div>
+            <div class="breadcrumb-title pe-3">Editar Cliente</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0 align-items-center">
@@ -51,8 +143,9 @@
         <div class="container mt-5">
 
             <form action="saveClientes" method="POST" id="multiStepForm" enctype="multipart/form-data">
-                <input type="hidden"   name="insertCliente" value="1" >
-                <input type="hidden"   name="id_cliente" value="<?=$id_cliente?>" >
+
+
+                <input type="hidden" name="editCliente" value="1" >
 
                 <!-- Sección 1: Información Básica -->
                 <div class="step" id="step1">
@@ -66,25 +159,25 @@
                     <div class="row g-3">
                         <div class="col-12 col-lg-4">
                             <label for="FisrtName" class="form-label">Nombre(s)</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe Nombre" value="" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe Nombre" value="<?= $datosClientes[0]['nombre_clte'] ?>" required>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="LastName" class="form-label">Primer Apellido</label>
-                            <input type="text" class="form-control" id="primerApellido" name="primerApellido" placeholder="Primer Apellido" value="" required>
+                            <input type="text" class="form-control" id="primerApellido" name="primerApellido" placeholder="Primer Apellido" value="<?= $datosClientes[0]['apaterno_clte'] ?>" required>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="LastName" class="form-label">Segundo Apellido</label>
-                            <input type="text" class="form-control" id="segundoApellido" name="segundoApellido" placeholder="Segundo Apellido" value="" required>
+                            <input type="text" class="form-control" id="segundoApellido" name="segundoApellido" placeholder="Segundo Apellido" value="<?= $datosClientes[0]['amaterno_clte'] ?>" required>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="PhoneNumber" class="form-label">Curp</label>
-                            <input type="text" class="form-control" id="curp" name="curp" placeholder="Curp" value="" required>
+                            <input type="text" class="form-control" id="curp" name="curp" placeholder="Curp" value="<?= $datosClientes[0]['curp'] ?>" required>
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="InputCountry" class="form-label">Identificación Oficial</label>
                             <select class="form-select" id="identificacionOficial" name="identificacionOficial" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['tipo_identificacion'] ?>" selected><?= $tipo_identificacion ?></option>
                                 <option value="CREDENCIAL PARA VOTAR">Ine</option>
                                 <option value="PASAPORTE">Pasaporte</option>
                                 <option value="CEDULA PROFESIONAL">Cedula Profesional</option>
@@ -92,12 +185,12 @@
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="serieNoIdentificacion" class="form-label">Número de Identificación</label>
-                            <input type="text" class="form-control" id="serieNoIdentificacion" name="serieNoIdentificacion" value="" placeholder="Número de Identificación">
+                            <input type="text" class="form-control" id="serieNoIdentificacion" name="serieNoIdentificacion" value="<?= $datosClientes[0]['clave_elector'] ?>" placeholder="Número de Identificación">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="Genero" class="form-label">Género</label>
                             <select class="form-select" id="genero" name="genero" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['sexo'] ?>" selected><?= $datosClientes[0]['sexo'] ?></option>
                                 <option value="M">Masculino</option>
                                 <option value="F">Femenino</option>
 
@@ -106,21 +199,21 @@
 
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">RFC</label>
-                            <input type="text" class="form-control" id="rfc" value="" name="rfc" placeholder="Escribe">
+                            <input type="text" class="form-control" id="rfc" value="<?= $datosClientes[0]['rfc'] ?>" name="rfc" placeholder="Escribe">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="fNac" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control  " id="fNac" value="" name="fNac" placeholder="Ingresa Fecha de Nacimiento">
+                            <input type="date" class="form-control  " id="fNac" value="<?= $datosClientes[0]['fecha_nacimiento'] ?>" name="fNac" placeholder="Ingresa Fecha de Nacimiento">
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="religion" class="form-label">Religión</label>
-                            <input type="text" class="form-control" id="religion" value="" name="religion" placeholder="Ingresa Religión">
+                            <input type="text" class="form-control" id="religion" value="<?= $datosClientes[0]['religion'] ?>" name="religion" placeholder="Ingresa Religión">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="paisNac" class="form-label">Pais de Nacimiento</label>
-                            <select class="form-select" id="paisNac" name="paisNac" value="" aria-label="Default select example">
-                                <option value=""> -- SELECCIONA NACION -- </option>
+                            <select class="form-select" id="paisNac" name="paisNac" aria-label="Default select example">
+                                <option value="<?= $datosClientes[0]['Fk_estado_nac'] ?>"><?= $datosClientes[0]['pais_nac'] ?></option>
                                 <option value="1">NAM :: NAMIBIANA</option>
                                 <option value="2">AGO :: ANGOLESA</option>
                                 <option value="3">DZA :: ARGELIANA</option>
@@ -299,8 +392,8 @@
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="nacionalidad" class="form-label">Nacionalidad</label>
-                            <select class="form-select" id="nacionalidadPais" name="nacionalidadPais" value="0" aria-label="Default select example">
-                                <option value=""> -- SELECCIONA NACION -- </option>
+                            <select class="form-select" id="nacionalidadPais" name="nacionalidadPais" aria-label="Default select example">
+                                <option value="<?= $datosClientes[0]['Fk_estado_nac'] ?>"><?= $datosClientes[0]['nacionalidad'] ?></option>
                                 <option value="1">NAM :: NAMIBIANA</option>
                                 <option value="2">AGO :: ANGOLESA</option>
                                 <option value="3">DZA :: ARGELIANA</option>
@@ -479,7 +572,7 @@
                         <div class="col-12 col-lg-4 mt-3" id="condicionMigratoriaDiv" style="display: d-none;">
                             <label for="condicionMigratoria" class="form-label">Condición Migratoria</label>
                             <select class="form-select" id="condicionMigratoria" name="condicionMigratoria">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['condicion_migrat'] ?>" selected><?= $datosClientes[0]['condicion_migrat'] ?></option>
                                 <option value="Residente Temporal">Residente Temporal</option>
                                 <option value="Residente Permanente">Residente Permanente</option>
                             </select>
@@ -487,7 +580,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="estCivil" class="form-label">Estado Civil</label>
                             <select class="form-select" id="estCivil" name="estCivil" aria-label="Default select example" onchange="toggleConyugeFields()">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['estado_civil'] ?>" selected><?= $datosClientes[0]['estado_civil'] ?></option>
                                 <option value="soltero(a)">Soltero(a)</option>
                                 <option value="casado(a)">Casado(a)</option>
                                 <option value="viudo(a)">Viudo(a)</option>
@@ -501,22 +594,22 @@
 
                                 <div class="col-12 col-lg-4">
                                     <label for="nombreConyuge" class="form-label">Nombre Cónyuge</label>
-                                    <input type="text" class="form-control" id="nombreConyuge" name="nombreConyuge" value="" placeholder="Nombre Completo">
+                                    <input type="text" class="form-control" id="nombreConyuge" name="nombreConyuge" value="<?= $datosClientes[0]['nombre_cony'] ?>" placeholder="Nombre Completo">
                                 </div>
                                 <div class="col-12 col-lg-4">
                                     <label for="primerApellidoConyuge" class="form-label">Primer Apellido Cónyuge</label>
-                                    <input type="text" class="form-control" id="primerApellidoConyuge" name="primerApellidoConyuge" value="" placeholder="Primer Apellido">
+                                    <input type="text" class="form-control" id="primerApellidoConyuge" name="primerApellidoConyuge" value="<?= $datosClientes[0]['apaterno_cony'] ?>" placeholder="Primer Apellido">
                                 </div>
                                 <div class="col-12 col-lg-4">
                                     <label for="segundoApellidoConyuge" class="form-label">Segundo Apellido Cónyuge</label>
-                                    <input type="text" class="form-control" id="segundoApellidoConyuge" name="segundoApellidoConyuge" value="" placeholder="Segundo Apellido">
+                                    <input type="text" class="form-control" id="segundoApellidoConyuge" name="segundoApellidoConyuge" value="<?= $datosClientes[0]['amaterno_cony'] ?>" placeholder="Segundo Apellido">
                                 </div>
 
                                 <div class="col-12 col-lg-4">
                                     <label for="numeroHijos" class="form-label">Número de Hijos</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="iconoNumeroHijos">#</span>
-                                        <input type="number" class="form-control" id="numeroHijos" name="numeroHijos" value="0" placeholder="Número Hijos" aria-describedby="iconoNumeroHijos">
+                                        <input type="number" class="form-control" id="numeroHijos" name="numeroHijos" value="<?= $datosClientes[0]['num_hijos'] ?>" placeholder="Número Hijos" aria-describedby="iconoNumeroHijos">
                                     </div>
                                 </div>
 
@@ -524,7 +617,7 @@
                                     <label for="numeroDependientes" class="form-label">Núm. Dep. Económicos</label>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="iconoDependientes">#</span>
-                                        <input type="number" class="form-control" id="numeroDependientes" value="0" name="numeroDependientes" placeholder="Número Dependientes" aria-describedby="iconoDependientes">
+                                        <input type="number" class="form-control" id="numeroDependientes" value="<?= $datosClientes[0]['num_dep_eco'] ?>" name="numeroDependientes" placeholder="Número Dependientes" aria-describedby="iconoDependientes">
                                     </div>
                                 </div>
                             </div>
@@ -533,37 +626,37 @@
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Celular</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone"></i></span>
-                                <input type="number" name="telCelular" class="form-control" value="0" placeholder="" aria-describedby="basic-addon1">
+                                <input type="number" name="telCelular" class="form-control" value="<?= $datosClientes[0]['tel_celular'] ?>" placeholder="" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Casa</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone-set"></i></span>
-                                <input type="number" class="form-control" name="telCasa" value="" placeholder="" aria-describedby="basic-addon1">
+                                <input type="number" class="form-control" name="telCasa" value="<?= $datosClientes[0]['tel_casa'] ?>" placeholder="" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Oficina</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone-set"></i></span>
-                                <input type="number" class="form-control" placeholder="" name="telOfici" value="" aria-describedby="basic-addon1">
+                                <input type="number" class="form-control" placeholder="" name="telOfici" value="<?= $datosClientes[0]['tel_oficina'] ?>" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Otro</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone-set"></i></span>
-                                <input type="number" class="form-control" placeholder="" name="telOtro" value="" aria-describedby="basic-addon1">
+                                <input type="number" class="form-control" placeholder="" name="telOtro" value="<?= $datosClientes[0]['tel_otro'] ?>" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Email Personal</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"> <i class="lni lni-envelope"></i></i></span>
-                                <input type="email" name="emailPersonal" class="form-control" value="" placeholder="">
+                                <input type="email" name="emailPersonal" class="form-control" value="<?= $datosClientes[0]['email'] ?>" placeholder="">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Email Trabajo</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"> <i class="lni lni-envelope"></i></span>
-                                <input type="email" name="emailTrabajo" class="form-control" value="" placeholder="">
+                                <input type="email" name="emailTrabajo" class="form-control" value="<?= $datosClientes[0]['email2'] ?>" placeholder="">
                             </div>
                         </div>
 
@@ -575,7 +668,7 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="estado" name="estadoDom" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['fk_estado'] ?>" selected><?= $datosClientes[0]['nom_estado'] ?></option>
                                 <?php
                                 $estados = ControladorClientes::ctrEstados();
                                 foreach ($estados as $estado) { ?>
@@ -585,32 +678,32 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="municipio" name="municipioDom" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['fk_municipio'] ?>" selected><?= $datosClientes[0]['desc_municipio'] ?></option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="localidad" name="localidadDom" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $datosClientes[0]['fk_localidad'] ?>" selected><?= $datosClientes[0]['nom_localidad'] ?></option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Calle</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" name="calle" value="" class="form-control" placeholder="">
+                                <input type="text" name="calle" value="<?= $datosClientes[0]['calle'] ?>" class="form-control" placeholder="">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">N. Ext</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" placeholder="" name="noExt" value="0">
+                                <input type="text" class="form-control" placeholder="" name="noExt" value="<?= $datosClientes[0]['num_ext'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">N. Int</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" name="noInt" class="form-control" placeholder="" value="0">
+                                <input type="text" name="noInt" class="form-control" placeholder="" value="<?= $datosClientes[0]['num_int'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
@@ -622,13 +715,13 @@
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Ciudad</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></i></span>
-                                <input type="text" name="ciudad" class="form-control" placeholder="" value="">
+                                <input type="text" name="ciudad" class="form-control" placeholder="" value="<?= $datosClientes[0]['colonia'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">C.P</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" name="cp" class="form-control" placeholder="" value="">
+                                <input type="text" name="cp" class="form-control" placeholder="" value="<?= $datosClientes[0]['cod_postal'] ?>">
                             </div>
                         </div>
 
@@ -647,7 +740,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="InputUsername" class="form-label">Profesión</label>
                             <select class="form-select" id="profesion" name="profesion" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $economicos[0]['profesion'] ?>" selected><?= $economicos[0]['profesion'] ?></option>
                                 <option value="empleado">Empleado</option>
                                 <option value="empresario">Empresario</option>
                                 <option value="inversionista">Inversionista</option>
@@ -657,20 +750,20 @@
                         </div>
                         <div class="col-12 col-lg-4" id="otraProfesionContainer" style="display: none;">
                             <label for="otraProfesion" class="form-label">Otra Profesión</label>
-                            <input type="text" name="otraProfesion" value="" class="form-control" id="otraProfesion" placeholder="">
+                            <input type="text" name="otraProfesion" value="<?= $economicos[0]['otra_profesion'] ?>" class="form-control" id="otraProfesion" placeholder="">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="InputEmail2" class="form-label">Ocupación</label>
-                            <input type="text" id="ocupacion" name="ocupacion" value="" class="form-control" id="InputEmail2" placeholder="">
+                            <input type="text" id="ocupacion" name="ocupacion" value="<?= $economicos[0]['ocupacion_clte'] ?>" class="form-control" id="InputEmail2" placeholder="">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="InputEmail2" class="form-label">Puesto</label>
-                            <input type="text" id="puesto" name="puesto" value="" class="form-control" id="InputEmail2" placeholder="">
+                            <input type="text" id="puesto" name="puesto" value="<?= $economicos[0]['puesto_clte'] ?>" class="form-control" id="InputEmail2" placeholder="">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="InputPassword" class="form-label">Condición de Actividad</label>
                             <select class="form-select" id="condicionActiva" name="condicionActiva" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $economicos[0]['actividad'] ?>" selected><?= $economicos[0]['actividad'] ?></option>
                                 <option value="asalariado">Asalariado</option>
                                 <option value="independiente">Independiente</option>
                                 <option value="jubilado">Jubilado</option>
@@ -682,17 +775,17 @@
 
                         <div class="col-12 col-lg-4" id="otraCondicionContainer" style="display: none;">
                             <label for="otraCondicion" class="form-label">Especificar Condición</label>
-                            <input type="text" id="otraCondicion" name="otraCondicion" class="form-control" id="otraCondicion" value="" placeholder="Especificar">
+                            <input type="text" id="otraCondicion" name="otraCondicion" class="form-control" id="otraCondicion" value="<?= $economicos[0]['otra_actividad'] ?>" placeholder="Especificar">
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="InputConfirmPassword" class="form-label">Nombre de Empresa</label>
-                            <input type="text" id="nombreEmpresa" class="form-control" name="nombreEmpresa" value="" id="InputConfirmPassword" value="">
+                            <input type="text" id="nombreEmpresa" class="form-control" name="nombreEmpresa" value="<?= $economicos[0]['nom_empres'] ?>" id="InputConfirmPassword" value="">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="InputConfirmPassword" class="form-label">Tipo de Empresa</label>
                             <select class="form-select" id="tipoEmpresa" name="tipoEmpresa" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $economicos[0]['tipo_empreesa'] ?>" selected><?= $economicos[0]['tipo_empresa'] ?></option>
                                 <option value="publica">Publica</option>
                                 <option value="privada">Privada</option>
                                 <option value="asociacionCivil">Asociación Civil</option>
@@ -701,7 +794,7 @@
                         </div>
                         <div class="col-12 col-lg-4" id="otroTipoEmpresaContainer" style="display: none;">
                             <label for="otroTipoEmpresa" class="form-label">Especificar Tipo de Empresa</label>
-                            <input type="text" name="otroTipoEmpresa" class="form-control" id="otroTipoEmpresa" value="" placeholder="Especificar tipo de empresa">
+                            <input type="text" name="otroTipoEmpresa" class="form-control" id="otroTipoEmpresa" value="<?= $economicos[0]['otro_tipo_emp'] ?>" placeholder="Especificar tipo de empresa">
                         </div>
 
                         <h5 class="mb-1">Domicilio Laboral</h5>
@@ -712,7 +805,7 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="estadoLaboral" name="estadoLaboral" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $economicos[0]['fk_pais'] ?>" selected><?= $economicos[0]['nom_estado'] ?></option>
                                 <?php
                                 $estados = ControladorClientes::ctrEstados();
                                 foreach ($estados as $estado) { ?>
@@ -722,50 +815,50 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="municipioLaboral" name="municipioLaboral" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $economicos[0]['fk_municipio'] ?>" selected><?= $economicos[0]['desc_municipio'] ?></option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="localidadLaboral" name="localidadLaboral" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?= $economicos[0]['fk_localidad'] ?>" selected><?= $economicos[0]['nom_localidad'] ?></option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Calle</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" id="calleEmpresa" name="calleEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="text" class="form-control" id="calleEmpresa" name="calleEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['calle'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">N. Ext</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="number" class="form-control" id="nextEmpresa" name="nextEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="number" class="form-control" id="nextEmpresa" name="nextEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['num_ext'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">N. Int</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="number" class="form-control" id="nintEmpresa" name="nintEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="number" class="form-control" id="nintEmpresa" name="nintEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['num_int'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Colonia</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" id="colEmpresa" name="colEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="text" class="form-control" id="colEmpresa" name="colEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['colonia'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Ciudad</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></i></span>
-                                <input type="text" class="form-control" id="ciudadEmpresa" name="ciudadEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="text" class="form-control" id="ciudadEmpresa" name="ciudadEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['ciudad'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">C.P</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" id="cpEmpresa" name="cpEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="text" class="form-control" id="cpEmpresa" name="cpEmpresa" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['cod_postal'] ?>">
                             </div>
 
 
@@ -776,14 +869,14 @@
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Ingresos Mensual Promedio</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-coin"></i></span>
-                                <input type="number" class="form-control" id="ingresoMensual" name="ingresoMensual" aria-label="Username" aria-describedby="basic-addon1" value="">
+                                <input type="number" class="form-control" id="ingresoMensual" name="ingresoMensual" aria-label="Username" aria-describedby="basic-addon1" value="<?= $economicos[0]['ingre_mensual'] ?>">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Ingresos Provenientes de:</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-coin"></i></span>
                                 <select class="form-select" id="ingresoProvinientes" name="ingresoProvinientes" aria-label="Default select example">
-                                    <option value="" selected>---</option>
+                                    <option value="<?= $economicos[0]['ingresos_provienen'] ?>" selected><?= $economicos[0]['ingresos_provienen'] ?></option>
                                     <option value="ACTIVIDADES_SORTEOS_CONCUROS"> ACTIVIDADES SOSTEOS Y CONCURSOS </option>
                                     <option value="TARJETAS_CREDITO"> TARJETAS DE CREDITO </option>
                                     <option value="PRESTAMOS_CREDITOS"> OTORGAMIENTO PRESTAMOS O CREDITOS </option>
@@ -873,7 +966,7 @@
 
                     <!-- Tabla de beneficiarios -->
                     <div class="mt-4">
-                        <table class="table table-bordered d-none" id="beneficiaryTable">
+                        <table class="table table-bordered <?= empty($beneficiarios) ? 'd-none' : '' ?>" id="beneficiaryTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -889,6 +982,22 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php if (!empty($beneficiarios)) : ?>
+                                    <?php foreach ($beneficiarios as $index => $beneficiario) : ?>
+                                        <tr>
+                                            <td><?= $index + 1; ?></td>
+                                            <td><input type="text" class="form-control" name="nombreBeneficiario[]" value="<?= $beneficiario['nom_beneficiario']; ?>" readonly></td>
+                                            <td><input type="text" class="form-control" name="pApellidoBeneficiario[]" value="<?= $beneficiario['apaterno_beneficiario']; ?>" readonly></td>
+                                            <td><input type="text" class="form-control" name="sApellidoBeneficiario[]" value="<?= $beneficiario['amaterno_beneficiario']; ?>" readonly></td>
+                                            <td><input type="text" class="form-control" name="parentezco[]" value="<?= $beneficiario['parentesco']; ?>" readonly></td>
+                                            <td><input type="text" class="form-control" name="porcentajeBeneficiario[]" value="<?= $beneficiario['porcentaje']; ?>" readonly></td>
+                                            <td><input type="date" class="form-control" name="fNacBen[]" value="<?= $beneficiario['f_nacimiento_ben']; ?>" readonly></td>
+                                            <td><input type="text" class="form-control" name="telBeneficiario[]" value="<?= $beneficiario['tel_contacto']; ?>" readonly></td>
+                                            <td><input type="text" class="form-control" name="dirBeneficiario[]" value="<?= $beneficiario['direccion_ben']; ?>" readonly></td>
+                                            <td><button type="button" class="btn btn-danger btn-sm removeBeneficiary">Eliminar</button></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -907,7 +1016,7 @@
                             <div class="col-12 col-lg-6">
                                 <label for="recursosProvienen" class="form-label">Los recursos provienen de:</label>
                                 <select class="form-select" id="recursosProvienen" name="recursosProvienen" value='' onchange="toggleInputs()">
-                                    <option value="">---------</option>
+                                    <option value="<?=$transaccionalidad[0]['recursos']?>"><?=$transaccionalidad[0]['recursos']?></option>
                                     <option value="RECURSOS PROPIOS">RECURSOS PROPIOS</option>
                                     <option value="RECURSOS DE TERCEROS">RECURSOS DE TERCEROS</option>
                                     <option value="AMBOS">AMBOS</option>
@@ -927,7 +1036,7 @@
                             <div class="col-12 col-lg-6">
                                 <label for="usoCuenta" class="form-label">Uso de la cuenta</label>
                                 <select id="usoCuenta" name="usoCuenta" class="form-control form-control-sm" required>
-                                    <option value="">-- Selecciona una opción --</option>
+                                    <option value="<?=$transaccionalidad[0]['uso_cuenta']?>"><?=$transaccionalidad[0]['uso_cuenta']?></option>
                                     <option value="AHORRO_INGR_PROPIO">Ahorro o Ingresos Propios</option>
                                     <option value="APOR_GOB">Aportación de Gobierno</option>
                                     <option value="SALARIO">Depósito de Salario</option>
@@ -937,7 +1046,7 @@
                             </div>
                             <div class="col-12 col-lg-6 mt-3" id="especificaContainer" style="display: none;">
                                 <label for="especificaOtro" class="form-label">Especifica</label>
-                                <input type="text" id="especificaOtro" name="especificaOtro" class="form-control form-control-sm" value='' placeholder="Especifica el uso de la cuenta">
+                                <input type="text" id="especificaOtro" name="especificaOtro" class="form-control form-control-sm" value='<?=$transaccionalidad[0]['uso_cuenta_otro']?>' placeholder="Especifica el uso de la cuenta">
                             </div>
                         </div>
 
@@ -1237,7 +1346,7 @@
                                         <select class="form-control" name="mensualTransaccion" id="mensualTransaccion">
 
                                             <span class="input-group-text" id="basic-addon1"><i class="lni lni-stats-up"></i></span>
-                                            <option value=""> -- -- -- -- </option>
+                                            <option value="<?=$transaccionalidad[0]['transac_men']?>"><?=$transaccionalidad[0]['transac_men']?></option>
                                             <option value="1_14"> 1 A 14 </option>
                                             <option value="15_29"> 15 A 29 </option>
                                             <option value="30_38"> 30 A 38 </option>
@@ -1252,7 +1361,7 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon2"><i class="lni lni-dollar"></i></span>
                                         <select class="form-control" name="montoTransaccion" id="montoTransaccion">
-                                            <option value=""> -- -- -- -- </option>
+                                            <option value="<?=$transaccionalidad[0]['monto_men']?>"><?=$transaccionalidad[0]['monto_men']?></option>
                                             <option value="1_15000"> 1 A 15,000 </option>
                                             <option value="15,001_50,000"> 15,001 A 50,000 </option>
                                             <option value="50,001_90,000"> 50,000 A 90,000 </option>
@@ -1268,7 +1377,7 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon3"><i class="lni lni-graph"></i></span>
                                         <select class="form-control" name="saldoPromedioMensual" id="saldoPromedioMensual">
-                                            <option value=""> -- -- -- -- </option>
+                                            <option value="<?=$transaccionalidad[0]['saldo_men']?>"><?=$transaccionalidad[0]['saldo_men']?></option>
                                             <option value="1_10,501"> 1 A 10,501 </option>
                                             <option value="10,501_35,000"> 10,501 A 35,000 </option>
                                             <option value="35,001_63,000"> 35,001 A 63,000 </option>
@@ -1298,20 +1407,20 @@
                     <div class="row g-3">
                         <div class="col-12 col-lg-4">
                             <label for="nombreCotitular" class="form-label">Cotitular</label>
-                            <input type="text" class="form-control" id="nombreCotitular" name="nombreCotitular" value="" placeholder="Nombre(s)">
+                            <input type="text" class="form-control" id="nombreCotitular" name="nombreCotitular" value="<?=$cotitular[0]['nom_cotitular']?>" placeholder="Nombre(s)">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="primerApellido" class="form-label">Primer Apellido</label>
-                            <input type="text" class="form-control" id="primerApellidoCotitular" name="primerApellidoCotitular" value="" placeholder="Primer Apellido">
+                            <input type="text" class="form-control" id="primerApellidoCotitular" name="primerApellidoCotitular" value="<?=$cotitular[0]['apaterno_cotitular']?>" placeholder="Primer Apellido">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="segundoApellido" class="form-label">Segundo Apellido</label>
-                            <input type="text" class="form-control" id="segundoApellidoCotitular" name="segundoApellidoCotitular" value="" placeholder="Segundo Apellido">
+                            <input type="text" class="form-control" id="segundoApellidoCotitular" name="segundoApellidoCotitular" value="<?=$cotitular[0]['amaterno_cotitular']?>" placeholder="Segundo Apellido">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="Genero" class="form-label">Género</label>
                             <select class="form-select" id="generoCotitular" name="generoCotitular" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['sexo_cotitular']?>" selected><?=$cotitular[0]['sexo_cotitular']?></option>
                                 <option value="M">Masculino</option>
                                 <option value="F">Femenino</option>
 
@@ -1320,7 +1429,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="InputCountry" class="form-label">Identificación Oficial</label>
                             <select class="form-select" id="identificacionOficialCotitular" name="identificacionOficialCotitular" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['tipo_identificacion_cotitular']?>" selected><?=$cotitular[0]['tipo_identificacion_cotitular']?></option>
                                 <option value="1">Ine</option>
                                 <option value="2">Pasaporte</option>
                                 <option value="3">Cedula Profesional</option>
@@ -1328,29 +1437,29 @@
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="serieNoIdentificacionCotitular" class="form-label">Número de Identificación</label>
-                            <input type="text" class="form-control" id="serieNoIdentificacionCotitular" name="serieNoIdentificacionCotitular" value="" placeholder="Número de Identificación">
+                            <input type="text" class="form-control" id="serieNoIdentificacionCotitular" name="serieNoIdentificacionCotitular" value="<?=$cotitular[0]['clave_elector_cotitular']?>" placeholder="Número de Identificación">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="serieNoIdentificacion" class="form-label">Curp</label>
-                            <input type="text" class="form-control" id="curpCotitular" name="curpCotitular" value="" placeholder="Número de Identificación">
+                            <input type="text" class="form-control" id="curpCotitular" name="curpCotitular" value="<?=$cotitular[0]['curp_cotitular']?>" placeholder="Número de Identificación">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">RFC</label>
-                            <input type="text" class="form-control" id="rfcCotitular" name="rfcCotitular" value="" placeholder="Escribe">
+                            <input type="text" class="form-control" id="rfcCotitular" name="rfcCotitular" value="<?=$cotitular[0]['rfc_cotitular']?>" placeholder="Escribe">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="fNac" class="form-label">Fecha de Nacimiento</label>
-                            <input type="text" class="form-control" id="fNacCotitular" name="fNacCotitular" value="" placeholder="Ingresa Fecha de Nacimiento">
+                            <input type="text" class="form-control" id="fNacCotitular" name="fNacCotitular" value="<?=$cotitular[0]['fecha_nacimiento_cotitular']?>" placeholder="Ingresa Fecha de Nacimiento">
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="religion" class="form-label">Religión</label>
-                            <input type="text" class="form-control" id="religionCotitular" name="religionCotitular" value="" placeholder="Ingresa Religión">
+                            <input type="text" class="form-control" id="religionCotitular" name="religionCotitular" value="<?=$cotitular[0]['religion_cotitular']?>" placeholder="Ingresa Religión">
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="paisNac" class="form-label">Pais de Nacimiento</label>
-                            <select class="form-select" id="paisNacCotitular" name="paisNacCotitular" aria-label="Default select example">
-                                <option value=""> -- SELECCIONA NACION -- </option>
+                            <select class="form-select" id="paisNacCotitular" name="paisNacCotitular"   aria-label="Default select example">
+                                <option value="<?=$cotitular[0]['Fk_pais_nac_cotitular']?>"><?=$cotitular[0]['pais_nac_cotitular']?></option>
                                 <option value="1">NAM :: NAMIBIANA</option>
                                 <option value="2">AGO :: ANGOLESA</option>
                                 <option value="3">DZA :: ARGELIANA</option>
@@ -1528,7 +1637,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="nacionalidad" class="form-label">Nacionalidad</label>
                             <select class="form-select" id="nacionalidadCotitular" name="nacionalidadCotitular" aria-label="Default select example">
-                                <option value=""> -- SELECCIONA NACION -- </option>
+                                <option value="<?=$cotitular[0]['nacionalidad_cotitular']?>"> <?=$cotitular[0]['nacionalidad_cotitular']?></option>
                                 <option value="1">NAM :: NAMIBIANA</option>
                                 <option value="2">AGO :: ANGOLESA</option>
                                 <option value="3">DZA :: ARGELIANA</option>
@@ -1706,7 +1815,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Entidad Nacimiento Federativa</label>
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control" name="estadoNacCotitular" id="estadoNacCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="estadoNacCotitular" id="estadoNacCotitular" value="<?=$cotitular[0]['Fk_estado_nac_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
 
@@ -1714,7 +1823,7 @@
                         <div class="col-12 col-lg-4 mt-3" id="condicionMigratoriaDivCotitular" style="display: d-none;">
                             <label for="condicionMigratoriaCotitular" class="form-label">Condición Migratoria</label>
                             <select class="form-select" id="condicionMigratoriaCotitular" name="condicionMigratoriaCotitular">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['condicion_migrat_cotitular']?>" selected><?=$cotitular[0]['condicion_migrat_cotitular']?></option>
                                 <option value="Residente Temporal">Residente Temporal</option>
                                 <option value="Residente Permanente">Residente Permanente</option>
                             </select>
@@ -1722,7 +1831,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="estCivil" class="form-label">Estado Civil</label>
                             <select class="form-select" id="estCivilCotitular" name="estCivilCotitular" aCotitularria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['estado_civil_cotitular']?>" selected><?=$cotitular[0]['estado_civil_cotitular']?></option>
                                 <option value="soltero(a)">Soltero(a)</option>
                                 <option value="casado(a)">Casado(a)</option>
                                 <option value="viudo(a)">Viudo(a)</option>
@@ -1734,20 +1843,20 @@
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Celular</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone"></i></span>
-                                <input type="text" class="form-control" name="telCelCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="telCelCotitular" value="<?=$cotitular[0]['tel_celular_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Casa</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone-set"></i></span>
-                                <input type="text" class="form-control" name="telCasaCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="telCasaCotitular" value="<?=$cotitular[0]['tel_casa_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Teléfono Oficina</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-phone-set"></i></span>
-                                <input type="text" class="form-control" name="telOfiCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="telOfiCotitular" value="<?=$cotitular[0]['tel_celular_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
@@ -1759,7 +1868,7 @@
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Email Personal Cotitular</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"> <i class="lni lni-envelope"></i></i></span>
-                                <input type="email" name="emailPersonalCotitular" id="emailPersonalCotitular" class="form-control" value="" placeholder="">
+                                <input type="email" name="emailPersonalCotitular" id="emailPersonalCotitular" class="form-control" value="<?=$cotitular[0]['email_cotitular']?>" placeholder="">
                             </div>
                         </div>
 
@@ -1771,7 +1880,7 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="estadoCotitular" name="estadoCotitular" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['fk_estado_cotitular']?>" selected><?=$cotitular[0]['nom_estado_cotitular']?></option>
                                 <?php
                                 $estados = ControladorClientes::ctrEstados();
                                 foreach ($estados as $estado) { ?>
@@ -1781,50 +1890,50 @@
                         </div>
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="municipioCotitular" name="municipioCotitular" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['fk_municipio_cotitular']?>" selected><?=$cotitular[0]['desc_municipio_cotitular']?></option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3">
                             <select class="form-select" id="localidadCotitular" name="localidadCotitular" aria-label="Default select example">
-                                <option value="" selected>---</option>
+                                <option value="<?=$cotitular[0]['fk_localidad_cotitular']?>" selected><?=$cotitular[0]['nom_localidad_cotitular']?></option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Calle</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" name="calleCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="calleCotitular" value="<?=$cotitular[0]['calle_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">N. Ext</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" name="noExtCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="noExtCotitular" value="<?=$cotitular[0]['num_ext_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">N. Int</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" name="noIntCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="noIntCotitular" value="<?=$cotitular[0]['num_int_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Colonia</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" name="coloniaCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="coloniaCotitular" value="<?=$cotitular[0]['colonia_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">Ciudad</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></i></span>
-                                <input type="text" class="form-control" name="ciudadCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="ciudadCotitular" value="<?=$cotitular[0]['colonia_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
                             <label for="rfc" class="form-label">C.P</label>
                             <div class="input-group mb-3"> <span class="input-group-text" id="basic-addon1"><i class="lni lni-map"></i></span>
-                                <input type="text" class="form-control" name="cpCotitular" value="" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" name="cpCotitular" value="<?=$cotitular[0]['cod_postal_cotitular']?>" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </div>
 
@@ -1840,64 +1949,86 @@
                     <h5 class="mb-1">Documentación</h5>
 
                     <div class="container mt-4">
-                        <div class="row">
-                            <!-- INE Anverso -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-INE-Anverso">📇</div>
-                                    <div class="document-title">INE Anverso</div>
-                                    <input type="file" name="ineAnverso" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-INE-Anverso')" />
-                                </div>
-                            </div>
-                            <!-- INE Reverso -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-INE-Reverso">📇</div>
-                                    <div class="document-title">INE Reverso</div>
-                                    <input type="file" name="ineReverso" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-INE-Reverso')" />
-                                </div>
-                            </div>
-                            <!-- Comprobante de Domicilio -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-Comprobante-Domicilio">📄</div>
-                                    <div class="document-title">Comprobante de Domicilio</div>
-                                    <input type="file" name="comprobanteDomicilio" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Comprobante-Domicilio')" />
-                                </div>
-                            </div>
-                            <!-- CURP -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-CURP">🆔</div>
-                                    <div class="document-title">CURP</div>
-                                    <input type="file" name="curpDoc" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-CURP')" />
-                                </div>
-                            </div>
-                            <!-- Estado de Cuenta -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-Estado-Cuenta">📑</div>
-                                    <div class="document-title">Estado de Cuenta</div>
-                                    <input type="file" name="estadoCuenta" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Estado-Cuenta')" />
-                                </div>
-                            </div>
-                            <!-- Constancia Fiscal -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-Constancia-Fiscal">📜</div>
-                                    <div class="document-title">Constancia Fiscal</div>
-                                    <input type="file" name="constanciaFiscal" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Constancia-Fiscal')" />
-                                </div>
-                            </div>
-                            <!-- Cuestionario de Inversionista -->
-                            <div class="col-md-3 mb-4">
-                                <div class="document-card">
-                                    <div class="document-icon" id="preview-Cuestionario-Inversionista">📝</div>
-                                    <div class="document-title">Cuestionario de Inversionista</div>
-                                    <input type="file" name="cuestionarioInversionista" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Cuestionario-Inversionista')" />
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row">
+    <!-- INE Anverso -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-INE-Anverso">
+                <?= renderDocumentPreview($documentos['ine_anverso'], 'preview-INE-Anverso',$id_cliente) ?>
+            </div>
+            <div class="document-title">INE Anverso</div>
+            <input type="file" name="ineAnverso" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-INE-Anverso')" />
+        </div>
+    </div>
+
+    <!-- INE Reverso -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-INE-Reverso">
+                <?= renderDocumentPreview($documentos['ine_reverso'], 'preview-INE-Reverso',$id_cliente) ?>
+            </div>
+            <div class="document-title">INE Reverso</div>
+            <input type="file" name="ineReverso" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-INE-Reverso')" />
+        </div>
+    </div>
+
+    <!-- Comprobante de Domicilio -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-Comprobante-Domicilio">
+                <?= renderDocumentPreview($documentos['domicilio_img'], 'preview-Comprobante-Domicilio',$id_cliente) ?>
+            </div>
+            <div class="document-title">Comprobante de Domicilio</div>
+            <input type="file" name="comprobanteDomicilio" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Comprobante-Domicilio')" />
+        </div>
+    </div>
+
+    <!-- CURP -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-CURP">
+                <?= renderDocumentPreview($documentos['curp_img'], 'preview-CURP',$id_cliente) ?>
+            </div>
+            <div class="document-title">CURP</div>
+            <input type="file" name="curpDoc" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-CURP')" />
+        </div>
+    </div>
+
+    <!-- Estado de Cuenta -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-Estado-Cuenta">
+                <?= renderDocumentPreview($documentos['edo_cuenta_img'], 'preview-Estado-Cuenta',$id_cliente) ?>
+            </div>
+            <div class="document-title">Estado de Cuenta</div>
+            <input type="file" name="estadoCuenta" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Estado-Cuenta')" />
+        </div>
+    </div>
+
+    <!-- Constancia Fiscal -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-Constancia-Fiscal">
+                <?= renderDocumentPreview($documentos['situacion_fiscal_img'], 'preview-Constancia-Fiscal',$id_cliente) ?>
+            </div>
+            <div class="document-title">Constancia Fiscal</div>
+            <input type="file" name="constanciaFiscal" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Constancia-Fiscal')" />
+        </div>
+    </div>
+
+    <!-- Cuestionario de Inversionista -->
+    <div class="col-md-3 mb-4">
+        <div class="document-card">
+            <div class="document-icon" id="preview-Cuestionario-Inversionista">
+                <?= renderDocumentPreview($documentos['cuestionario_inver_img'], 'preview-Cuestionario-Inversionista',$id_cliente) ?>
+            </div>
+            <div class="document-title">Cuestionario de Inversionista</div>
+            <input type="file" name="cuestionarioInversionista" class="form-control mt-3" accept=".jpeg,.png,.jpg,.pdf" onchange="previewFile(this, 'preview-Cuestionario-Inversionista')" />
+        </div>
+    </div>
+</div>
+
+
                         <h2>Confirmación</h2>
                         <p>Por favor revisa tu información antes de enviar el formulario.</p>
                         <button type="button" class="btn btn-secondary prev">Anterior</button>
@@ -2159,8 +2290,15 @@
                     }
                 });
             });
-            let beneficiaryCounter = 0;
+            let beneficiaryCounter = <?= count($beneficiarios); ?>;
             let totalPercentage = 0;
+
+            // Calcular el porcentaje total inicial
+            <?php if (!empty($beneficiarios)) : ?>
+                <?php foreach ($beneficiarios as $beneficiario) : ?>
+                    totalPercentage += parseFloat('<?= $beneficiario['porcentaje']; ?>') || 0;
+                <?php endforeach; ?>
+            <?php endif; ?>
 
             document.getElementById('addBeneficiaryButton').addEventListener('click', function() {
                 const table = document.getElementById('beneficiaryTable');
@@ -2176,33 +2314,27 @@
                 const telefono = document.getElementById('telBeneficiario').value.trim();
                 const direccion = document.getElementById('dirBeneficiario').value.trim();
 
-                // Validar que todos los campos estén llenos
                 if (!nombre || !pApellido || !sApellido || !parentezco || !porcentaje || !fechaNac || !telefono || !direccion) {
                     Swal.fire('Error', 'Todos los campos son obligatorios. Por favor, completa todos los campos.', 'error');
                     return;
                 }
 
-                // Validar que el porcentaje sea un número válido
                 if (isNaN(porcentaje) || porcentaje <= 0) {
                     Swal.fire('Error', 'El porcentaje debe ser un número mayor a 0.', 'error');
                     return;
                 }
 
-                // Validar que el porcentaje no exceda el 100%
                 const porcentajeFloat = parseFloat(porcentaje);
                 if (totalPercentage + porcentajeFloat > 100) {
                     Swal.fire('Error', 'El porcentaje total no puede exceder el 100%.', 'error');
                     return;
                 }
 
-                // Incrementar el total de porcentaje y contador
                 totalPercentage += porcentajeFloat;
                 beneficiaryCounter++;
 
-                // Mostrar la tabla si estaba oculta
                 table.classList.remove('d-none');
 
-                // Crear una nueva fila con los valores capturados
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
         <td>${beneficiaryCounter}</td>
@@ -2217,15 +2349,12 @@
         <td><button type="button" class="btn btn-danger btn-sm removeBeneficiary">Eliminar</button></td>
     `;
 
-                // Agregar la nueva fila al cuerpo de la tabla
                 tbody.appendChild(newRow);
 
-                // Mostrar alerta si el porcentaje alcanza el 100%
                 if (totalPercentage === 100) {
                     Swal.fire('Información', 'El porcentaje total ha alcanzado el 100%.', 'success');
                 }
 
-                // Limpiar los campos de entrada
                 document.getElementById('nombreBeneficiario').value = '';
                 document.getElementById('pApellidoBeneficiario').value = '';
                 document.getElementById('sApellidoBeneficiario').value = '';
@@ -2236,21 +2365,19 @@
                 document.getElementById('dirBeneficiario').value = '';
             });
 
-            // Evento delegado para manejar la eliminación de beneficiarios
             document.getElementById('beneficiaryTable').addEventListener('click', function(event) {
                 if (event.target.classList.contains('removeBeneficiary')) {
                     const row = event.target.closest('tr');
                     const porcentaje = parseFloat(row.querySelector('input[name="porcentajeBeneficiario[]"]').value);
 
-                    // Actualizar el total de porcentaje
                     totalPercentage -= porcentaje;
 
-                    // Eliminar la fila
                     row.remove();
 
                     Swal.fire('Información', 'El beneficiario ha sido eliminado.', 'info');
                 }
             });
+
 
 
             // Mostrar u ocultar los campos del cónyuge según el estado civil
@@ -2609,9 +2736,4 @@
                     preview.innerHTML = "📇";
                 }
             }
-
-
-
         </script>
-
-

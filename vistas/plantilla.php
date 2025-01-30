@@ -96,6 +96,7 @@ if ($_SESSION['perfil'] == 'administrador') {
       $_GET["ruta"] == "depositoBitcoinUsd" ||
       $_GET["ruta"] == "addCliente"||
       $_GET["ruta"] == "pagosPendientes" ||
+      $_GET["ruta"] == "editClientes" ||
      
       $_GET["ruta"] == "salir"
 

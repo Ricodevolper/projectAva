@@ -18,7 +18,7 @@ $saldoTotalBtc = ControladorBi::ctrSaldoTotalBtc($perfil);
 
 $agentesConContratos = ControladorBi::ctrAsesoresContratosActivos($perfil);
 
-$tc = ModeloAutomatico::mdlInsertarTipoCambioFaltante('2025-01-16');
+$tc = ModeloAutomatico::mdlInsertarTipoCambioFaltante('2025-01-29');
 
 //   foreach ($agentesConContratos as $id_empleado) {
 //     // Obtener datos del empleado
