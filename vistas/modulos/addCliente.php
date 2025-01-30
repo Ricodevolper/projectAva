@@ -50,7 +50,7 @@
 
         <div class="container mt-5">
 
-            <form action="saveClientes" method="POST" id="multiStepForm" enctype="multipart/form-data">
+            <form action="saveClientes" id="formCliente"  method="POST" id="multiStepForm" enctype="multipart/form-data">
                 <input type="hidden"   name="insertCliente" value="1" >
                 <input type="hidden"   name="id_cliente" value="<?=$id_cliente?>" >
 
@@ -926,7 +926,7 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <label for="usoCuenta" class="form-label">Uso de la cuenta</label>
-                                <select id="usoCuenta" name="usoCuenta" class="form-control form-control-sm" required>
+                                <select id="usoCuenta" name="usoCuenta" class="form-control form-control-sm" >
                                     <option value="">-- Selecciona una opción --</option>
                                     <option value="AHORRO_INGR_PROPIO">Ahorro o Ingresos Propios</option>
                                     <option value="APOR_GOB">Aportación de Gobierno</option>
@@ -2613,5 +2613,26 @@
 
 
         </script>
+
+
+<script>
+  document.getElementById('formCliente').addEventListener('submit', function (event) {
+    event.preventDefault(); // Evita el envío inmediato
+
+    Swal.fire({
+      title: '¿Confirmar envío?',
+      text: '¿Estás seguro de que deseas enviar este formulario?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, enviar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.submit(); // Envía el formulario si el usuario confirma
+      }
+    });
+  });
+</script>
 
 
